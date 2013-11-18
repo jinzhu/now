@@ -1,20 +1,20 @@
-= Now
+# Now
 
 Now is a time toolkit for golang
 
-== Why the project named Now?
+## Why the project named `Now`
 
 ```go
 now.BeginningOfDay()
 ```
 `now` is quite readable, aha?
 
-== But `now` is so common I can't find it with my favorite search engine
+## But `now` is so common I can't find it with my favorite search engine
 
 * Star it in github [https://github.com/jinzhu/now](https://github.com/jinzhu/now)
 * Search it with [http://godoc.org](http://godoc.org)
 
-== Usage
+## Usage
 
 ```go
 time.Now() // 2013-11-18 17:51:49.123456789 Mon
