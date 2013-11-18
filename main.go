@@ -73,3 +73,15 @@ func EndOfMonth() time.Time {
 func EndOfYear() time.Time {
 	return New(time.Now()).EndOfYear()
 }
+
+func Monday() time.Time {
+	return New(time.Now()).EndOfYear()
+}
+
+func Sunday() time.Time {
+	return New(time.Now()).EndOfYear()
+}
+
+func EndOfSunday() time.Time {
+	return New(time.Now()).EndOfSunday()
+}

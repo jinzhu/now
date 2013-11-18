@@ -39,7 +39,18 @@ now.EndOfWeek()           // 2013-11-24 23:59:59.999999999 Sun
 now.EndOfMonth()          // 2013-11-30 23:59:59.999999999 Sat
 now.EndOfYear()           // 2013-12-31 23:59:59.999999999 Tue
 
+
 // Use another time
 t := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.Now().Location())
 now.New(t).EndOfMonth()   // 2013-02-28 23:59:59.999999999 Thu
+
+
+// Don't want be bothered with the First Day setting, Use Monday, Sunday
+now.Monday                // 2013-11-18 00:00:00 Mon
+now.Sunday                // 2013-11-24 00:00:00 Sun (Next Sunday)
+now.EndOfSunday           // 2013-11-24 23:59:59.999999999 Sun (End of next Sunday)
+
+t := time.Date(2013, 11, 24, 17, 51, 49, 123456789, time.Now().Location()) // 2013-11-24 17:51:49.123456789 Sun
+now.New(t).Sunday         // 2013-11-24 00:00:00 Sun (Beginning Of Today if today is Sunday)
+now.New(t).EndOfSunday    // 2013-11-24 23:59:59.999999999 Sun (End of Today if today is Sunday)
 ```

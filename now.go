@@ -64,3 +64,24 @@ func (now *Now) EndOfMonth() time.Time {
 func (now *Now) EndOfYear() time.Time {
 	return now.BeginningOfYear().AddDate(1, 0, 0).Add(-time.Nanosecond)
 }
+
+func (now *Now) Monday() time.Time {
+	t := now.BeginningOfDay()
+	d := time.Duration(-int(t.Weekday())+1) * 24 * time.Hour
+	return t.Truncate(time.Hour).Add(d)
+}
+
+func (now *Now) Sunday() time.Time {
+	t := now.BeginningOfDay()
+	weekday := 7 - int(t.Weekday())
+	if weekday == 7 {
+		return t
+	} else {
+		d := time.Duration(weekday) * 24 * time.Hour
+		return t.Truncate(time.Hour).Add(d)
+	}
+}
+
+func (now *Now) EndOfSunday() time.Time {
+	return now.Sunday().Add(24*time.Hour - time.Nanosecond)
+}
