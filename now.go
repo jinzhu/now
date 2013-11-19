@@ -3,16 +3,16 @@ package now
 import "time"
 
 func (now *Now) BeginningOfMinute() time.Time {
-	return now.time.Truncate(time.Minute)
+	return now.Truncate(time.Minute)
 }
 
 func (now *Now) BeginningOfHour() time.Time {
-	return now.time.Truncate(time.Hour)
+	return now.Truncate(time.Hour)
 }
 
 func (now *Now) BeginningOfDay() time.Time {
-	d := time.Duration(-now.time.Hour()) * time.Hour
-	return now.time.Truncate(time.Hour).Add(d)
+	d := time.Duration(-now.Hour()) * time.Hour
+	return now.Truncate(time.Hour).Add(d)
 }
 
 func (now *Now) BeginningOfWeek() time.Time {
