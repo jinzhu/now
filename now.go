@@ -67,17 +67,21 @@ func (now *Now) EndOfYear() time.Time {
 
 func (now *Now) Monday() time.Time {
 	t := now.BeginningOfDay()
-	d := time.Duration(-int(t.Weekday())+1) * 24 * time.Hour
+	weekday := int(t.Weekday())
+	if weekday == 0 {
+		weekday = 7
+	}
+	d := time.Duration(-weekday+1) * 24 * time.Hour
 	return t.Truncate(time.Hour).Add(d)
 }
 
 func (now *Now) Sunday() time.Time {
 	t := now.BeginningOfDay()
-	weekday := 7 - int(t.Weekday())
-	if weekday == 7 {
+	weekday := int(t.Weekday())
+	if weekday == 0 {
 		return t
 	} else {
-		d := time.Duration(weekday) * 24 * time.Hour
+		d := time.Duration(7-weekday) * 24 * time.Hour
 		return t.Truncate(time.Hour).Add(d)
 	}
 }

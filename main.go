@@ -13,10 +13,6 @@ import "time"
 
 var FirstDayMonday bool
 
-func init() {
-	FirstDayMonday = false
-}
-
 type Now struct {
 	time   time.Time
 	format string

@@ -5,11 +5,7 @@ import (
 	"time"
 )
 
-var format string
-
-func init() {
-	format = "2006-01-02 15:04:05.999999999"
-}
+var format = "2006-01-02 15:04:05.999999999"
 
 func TestBeginningOf(t *testing.T) {
 	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.Now().Location())
@@ -26,15 +22,15 @@ func TestBeginningOf(t *testing.T) {
 		t.Errorf("BeginningOfDay")
 	}
 
+	if New(n).BeginningOfWeek().Format(format) != "2013-11-17 00:00:00" {
+		t.Errorf("BeginningOfWeek")
+	}
+
 	FirstDayMonday = true
 	if New(n).BeginningOfWeek().Format(format) != "2013-11-18 00:00:00" {
 		t.Errorf("BeginningOfWeek, FirstDayMonday")
 	}
-
 	FirstDayMonday = false
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-17 00:00:00" {
-		t.Errorf("BeginningOfWeek")
-	}
 
 	if New(n).BeginningOfMonth().Format(format) != "2013-11-01 00:00:00" {
 		t.Errorf("BeginningOfMonth")
@@ -94,6 +90,10 @@ func TestMondayAndSunday(t *testing.T) {
 	n2 := time.Date(2013, 11, 24, 17, 51, 49, 123456789, time.Now().Location())
 
 	if New(n).Monday().Format(format) != "2013-11-18 00:00:00" {
+		t.Errorf("Monday")
+	}
+
+	if New(n2).Monday().Format(format) != "2013-11-18 00:00:00" {
 		t.Errorf("Monday")
 	}
 

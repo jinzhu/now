@@ -51,6 +51,7 @@ now.Sunday()              // 2013-11-24 00:00:00 Sun (Next Sunday)
 now.EndOfSunday()         // 2013-11-24 23:59:59.999999999 Sun (End of next Sunday)
 
 t := time.Date(2013, 11, 24, 17, 51, 49, 123456789, time.Now().Location()) // 2013-11-24 17:51:49.123456789 Sun
+now.New(t).Monday()       // 2013-11-18 00:00:00 Sun (Last Monday if today is Sunday)
 now.New(t).Sunday()       // 2013-11-24 00:00:00 Sun (Beginning Of Today if today is Sunday)
 now.New(t).EndOfSunday()  // 2013-11-24 23:59:59.999999999 Sun (End of Today if today is Sunday)
 ```
