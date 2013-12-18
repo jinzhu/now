@@ -94,6 +94,13 @@ func TestOccurrenceOf(t *testing.T) {
 	if New(n).NextOccurrenceOf(1, 1).Format(format) != "2014-01-01 00:00:00" {
 		t.Errorf("NextOccurrenceOf next year")
 	}
+
+	if New(n).LastOccurrenceOf(11, 10).Format(format) != "2013-11-10 00:00:00" {
+		t.Errorf("LastOccurrenceOf same year")
+	}
+	if New(n).LastOccurrenceOf(12, 1).Format(format) != "2012-12-01 00:00:00" {
+		t.Errorf("LastOccurrenceOf last year")
+	}
 }
 
 func TestMondayAndSunday(t *testing.T) {
@@ -155,6 +162,8 @@ func Example() {
 
 	NextOccurrenceOf(12, 21) // 2013-12-21 00:00:00 Sat
 	NextOccurrenceOf(1, 1)   // 2014-01-01 00:00:00 Wed
+	LastOccurrenceOf(11, 10) // 2013-11-10 00:00:00 Sun
+	LastOccurrenceOf(12, 1)  // 2012-12-01 00:00:00 Sat
 
 	// Use another time
 	t := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.Now().Location())
