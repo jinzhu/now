@@ -69,6 +69,10 @@ func EndOfYear() time.Time {
 	return New(time.Now()).EndOfYear()
 }
 
+func NextOccurrenceOf(month time.Month, day int) time.Time {
+	return New(time.Now()).NextOccurrenceOf(month, day)
+}
+
 func Monday() time.Time {
 	return New(time.Now()).EndOfYear()
 }

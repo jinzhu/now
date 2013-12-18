@@ -85,6 +85,17 @@ func TestEndOf(t *testing.T) {
 	}
 }
 
+func TestOccurrenceOf(t *testing.T) {
+	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.Now().Location())
+
+	if New(n).NextOccurrenceOf(12, 20).Format(format) != "2013-12-20 00:00:00" {
+		t.Errorf("NextOccurrenceOf same year")
+	}
+	if New(n).NextOccurrenceOf(1, 1).Format(format) != "2014-01-01 00:00:00" {
+		t.Errorf("NextOccurrenceOf next year")
+	}
+}
+
 func TestMondayAndSunday(t *testing.T) {
 	n := time.Date(2013, 11, 19, 17, 51, 49, 123456789, time.Now().Location())
 	n2 := time.Date(2013, 11, 24, 17, 51, 49, 123456789, time.Now().Location())
@@ -141,6 +152,9 @@ func Example() {
 	EndOfWeek()           // 2013-11-24 23:59:59.999999999 Sun
 	EndOfMonth()          // 2013-11-30 23:59:59.999999999 Sat
 	EndOfYear()           // 2013-12-31 23:59:59.999999999 Tue
+
+	NextOccurrenceOf(12, 21) // 2013-12-21 00:00:00 Sat
+	NextOccurrenceOf(1, 1)   // 2014-01-01 00:00:00 Wed
 
 	// Use another time
 	t := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.Now().Location())
