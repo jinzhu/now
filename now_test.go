@@ -148,6 +148,18 @@ func TestParse(t *testing.T) {
 	if New(n).MustParse("18:20:39").Format(format) != "2013-11-18 18:20:39" {
 		t.Errorf("Parse 18:20:39")
 	}
+
+	if New(n).MustParse("18:20:39", "2011-01-01").Format(format) != "2011-01-01 18:20:39" {
+		t.Errorf("Parse two strings 18:20:39, 2011-01-01")
+	}
+
+	if New(n).MustParse("2011-01-01", "18:20:39").Format(format) != "2011-01-01 18:20:39" {
+		t.Errorf("Parse two strings 2011-01-01, 18:20:39")
+	}
+
+	if New(n).MustParse("2011-01-01", "18").Format(format) != "2011-01-01 18:00:00" {
+		t.Errorf("Parse two strings 2011-01-01, 18")
+	}
 }
 
 func Example() {
