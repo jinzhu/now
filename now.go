@@ -112,11 +112,12 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 	currentLocation := now.Location()
 
 	for _, str := range strs {
-		hasDate := regexp.MustCompile(`-\d`).MatchString(str)
+		onlyTime := regexp.MustCompile(`^\s*\d+(:\d+)*\s*$`).MatchString(str) // match 15:04:05, 15
 
 		t, err = parseWithFormat(str)
 		if err == nil {
 			parseTime = []int{t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
+			onlyTime = onlyTime && (parseTime[3] == 1) && (parseTime[4] == 1)
 
 			for i, v := range parseTime {
 				// Fill up missed information with current time
@@ -129,7 +130,7 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 				}
 
 				// Default day and month is 1, fill up it if missing it
-				if (i == 3 || i == 4) && !hasDate {
+				if (i == 3 || i == 4) && onlyTime {
 					parseTime[i] = currentTime[i]
 				}
 			}

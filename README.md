@@ -75,6 +75,14 @@ now.MustParse("2002-10-12 22:14")       // 2002-10-12 22:14:00
 now.MustParse("99:99")                  // panic: Can't parse string as time: 99:99
 ```
 
+Extend `now` to support more formats is quite easy, just update `TimeFormats` variable with `time.Format` like time layout
+
+```go
+now.TimeFormats = append(now.TimeFormats, "02 Jan 2006 15:04")
+```
+
+Please send me pull requests if you want a format to be supported officially
+
 # Author
 
 **jinzhu**
