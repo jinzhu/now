@@ -12,6 +12,7 @@ package now
 import "time"
 
 var FirstDayMonday bool
+var TimeFormats = []string{"2006-1-2 15:4:5", "2006-1-2 15:4", "2006-1-2", "1-2", "15:4:5", "15:4", "15"}
 
 type Now struct {
 	time.Time

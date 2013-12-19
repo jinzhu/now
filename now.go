@@ -95,8 +95,7 @@ func (now *Now) EndOfSunday() time.Time {
 }
 
 func parseWithFormat(str string) (t time.Time, err error) {
-	formats := []string{"2006-1-2 15:4:5", "2006-1-2 15:4", "2006-1-2", "1-2", "15:4:5", "15:4", "15"}
-	for _, format := range formats {
+	for _, format := range TimeFormats {
 		t, err = time.Parse(format, str)
 		if err == nil {
 			return
