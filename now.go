@@ -102,7 +102,7 @@ func parseWithFormat(str string) (t time.Time, err error) {
 			return
 		}
 	}
-	err = errors.New("Can't parse string: " + str)
+	err = errors.New("Can't parse string as time: " + str)
 	return
 }
 

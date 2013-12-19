@@ -55,3 +55,21 @@ now.New(t).Monday()       // 2013-11-18 00:00:00 Sun (Last Monday if today is Su
 now.New(t).Sunday()       // 2013-11-24 00:00:00 Sun (Beginning Of Today if today is Sunday)
 now.New(t).EndOfSunday()  // 2013-11-24 23:59:59.999999999 Sun (End of Today if today is Sunday)
 ```
+
+#### Parse String
+
+```go
+time.Now() // 2013-11-18 17:51:49.123456789 Mon
+
+// Parse(string) (time.Time, error)
+t, err := now.Parse("12:20")            // 2013-11-18 12:20:00, nil
+t, err := now.Parse("1999-12-12 12:20") // 1999-12-12 12:20:00, nil
+t, err := now.Parse("99:99")            // 2013-11-18 12:20:00, Can't parse string as time: 99:99
+
+// MustParse(string) time.Time
+now.MustParse("2013-01-13")             // 2013-01-13 00:00:00
+now.MustParse("02-17")                  // 2013-02-17 00:00:00
+now.MustParse("8")                      // 2013-11-18 08:00:00
+now.MustParse("2002-10-12 22:14")       // 2002-10-12 22:14:00
+now.MustParse("99:99")                  // panic: Can't parse string as time: 99:99
+```
