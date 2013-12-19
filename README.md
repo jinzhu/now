@@ -69,6 +69,7 @@ t, err := now.Parse("99:99")            // 2013-11-18 12:20:00, Can't parse stri
 // MustParse(string) time.Time
 now.MustParse("2013-01-13")             // 2013-01-13 00:00:00
 now.MustParse("02-17")                  // 2013-02-17 00:00:00
+now.MustParse("2-17")                   // 2013-02-17 00:00:00
 now.MustParse("8")                      // 2013-11-18 08:00:00
 now.MustParse("2002-10-12 22:14")       // 2002-10-12 22:14:00
 now.MustParse("99:99")                  // panic: Can't parse string as time: 99:99

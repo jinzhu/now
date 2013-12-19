@@ -129,6 +129,14 @@ func TestParse(t *testing.T) {
 		t.Errorf("Parse 2002-10-12 22:14")
 	}
 
+	if New(n).MustParse("2002-10-12 2:4").Format(format) != "2002-10-12 02:04:00" {
+		t.Errorf("Parse 2002-10-12 2:4")
+	}
+
+	if New(n).MustParse("2002-10-12 02:04").Format(format) != "2002-10-12 02:04:00" {
+		t.Errorf("Parse 2002-10-12 02:04")
+	}
+
 	if New(n).MustParse("2002-10-12 22:14:56").Format(format) != "2002-10-12 22:14:56" {
 		t.Errorf("Parse 2002-10-12 22:14:56")
 	}
@@ -153,7 +161,7 @@ func TestParse(t *testing.T) {
 		t.Errorf("Parse two strings 18:20:39, 2011-01-01")
 	}
 
-	if New(n).MustParse("2011-01-01", "18:20:39").Format(format) != "2011-01-01 18:20:39" {
+	if New(n).MustParse("2011-1-1", "18:20:39").Format(format) != "2011-01-01 18:20:39" {
 		t.Errorf("Parse two strings 2011-01-01, 18:20:39")
 	}
 
