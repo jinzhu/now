@@ -80,3 +80,11 @@ func Sunday() time.Time {
 func EndOfSunday() time.Time {
 	return New(time.Now()).EndOfSunday()
 }
+
+func Parse(str string) (time.Time, error) {
+	return New(time.Now()).Parse(str)
+}
+
+func MustParse(str string) time.Time {
+	return New(time.Now()).MustParse(str)
+}

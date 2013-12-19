@@ -119,6 +119,37 @@ func TestMondayAndSunday(t *testing.T) {
 	}
 }
 
+func TestParse(t *testing.T) {
+	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.Now().Location())
+	if New(n).MustParse("10-12").Format(format) != "2013-10-12 00:00:00" {
+		t.Errorf("Parse 10-12")
+	}
+
+	if New(n).MustParse("2002-10-12 22:14").Format(format) != "2002-10-12 22:14:00" {
+		t.Errorf("Parse 2002-10-12 22:14")
+	}
+
+	if New(n).MustParse("2002-10-12 22:14:56").Format(format) != "2002-10-12 22:14:56" {
+		t.Errorf("Parse 2002-10-12 22:14:56")
+	}
+
+	if New(n).MustParse("2002-10-12").Format(format) != "2002-10-12 00:00:00" {
+		t.Errorf("Parse 2002-10-12")
+	}
+
+	if New(n).MustParse("18").Format(format) != "2013-11-18 18:00:00" {
+		t.Errorf("Parse 18 as hour")
+	}
+
+	if New(n).MustParse("18:20").Format(format) != "2013-11-18 18:20:00" {
+		t.Errorf("Parse 18:20")
+	}
+
+	if New(n).MustParse("18:20:39").Format(format) != "2013-11-18 18:20:39" {
+		t.Errorf("Parse 18:20:39")
+	}
+}
+
 func Example() {
 	time.Now() // 2013-11-18 17:51:49.123456789 Mon
 

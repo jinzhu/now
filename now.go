@@ -1,6 +1,10 @@
 package now
 
-import "time"
+import (
+	"errors"
+	"regexp"
+	"time"
+)
 
 func (now *Now) BeginningOfMinute() time.Time {
 	return now.Truncate(time.Minute)
@@ -88,4 +92,53 @@ func (now *Now) Sunday() time.Time {
 
 func (now *Now) EndOfSunday() time.Time {
 	return now.Sunday().Add(24*time.Hour - time.Nanosecond)
+}
+
+func (now *Now) Parse(str string) (t time.Time, err error) {
+	formats := []string{"2006-01-02 15:04:05", "2006-01-02 15:04", "2006-01-02", "01-02", "15:04:05", "15:04", "15"}
+
+	parseTime := []int{}
+	currentTime := []int{now.Second(), now.Minute(), now.Hour(), now.Day(), int(now.Month()), now.Year()}
+	currentLocation := now.Location()
+	hasDate := regexp.MustCompile(`-\d`).MatchString(str)
+
+	for _, format := range formats {
+		t, e := time.Parse(format, str)
+		if e == nil {
+			parseTime = []int{t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
+
+			var setCurrentTime bool
+			for i, v := range parseTime {
+				// Fill up missed information with current time
+				if v == 0 {
+					if setCurrentTime {
+						parseTime[i] = currentTime[i]
+					}
+				} else {
+					setCurrentTime = true
+				}
+
+				// Default day and month is 1, fill up it if missing it
+				if (i == 3 || i == 4) && !hasDate {
+					parseTime[i] = currentTime[i]
+				}
+			}
+			break
+		}
+	}
+
+	if len(parseTime) > 0 {
+		t = time.Date(parseTime[5], time.Month(parseTime[4]), parseTime[3], parseTime[2], parseTime[1], parseTime[0], 0, currentLocation)
+	} else {
+		err = errors.New("Can't parse string: " + str)
+	}
+	return
+}
+
+func (now *Now) MustParse(str string) (t time.Time) {
+	t, err := now.Parse(str)
+	if err != nil {
+		panic(err)
+	}
+	return t
 }
