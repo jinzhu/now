@@ -8,7 +8,7 @@ import (
 var format = "2006-01-02 15:04:05.999999999"
 
 func TestBeginningOf(t *testing.T) {
-	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.Now().Location())
+	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.UTC)
 
 	if New(n).BeginningOfMinute().Format(format) != "2013-11-18 17:51:00" {
 		t.Errorf("BeginningOfMinute")
@@ -42,7 +42,7 @@ func TestBeginningOf(t *testing.T) {
 }
 
 func TestEndOf(t *testing.T) {
-	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.Now().Location())
+	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.UTC)
 
 	if New(n).EndOfMinute().Format(format) != "2013-11-18 17:51:59.999999999" {
 		t.Errorf("EndOfMinute")
@@ -74,20 +74,20 @@ func TestEndOf(t *testing.T) {
 		t.Errorf("EndOfYear")
 	}
 
-	n1 := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.Now().Location())
+	n1 := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.UTC)
 	if New(n1).EndOfMonth().Format(format) != "2013-02-28 23:59:59.999999999" {
 		t.Errorf("EndOfMonth for 2013/02")
 	}
 
-	n2 := time.Date(1900, 02, 18, 17, 51, 49, 123456789, time.Now().Location())
+	n2 := time.Date(1900, 02, 18, 17, 51, 49, 123456789, time.UTC)
 	if New(n2).EndOfMonth().Format(format) != "1900-02-28 23:59:59.999999999" {
 		t.Errorf("EndOfMonth")
 	}
 }
 
 func TestMondayAndSunday(t *testing.T) {
-	n := time.Date(2013, 11, 19, 17, 51, 49, 123456789, time.Now().Location())
-	n2 := time.Date(2013, 11, 24, 17, 51, 49, 123456789, time.Now().Location())
+	n := time.Date(2013, 11, 19, 17, 51, 49, 123456789, time.UTC)
+	n2 := time.Date(2013, 11, 24, 17, 51, 49, 123456789, time.UTC)
 
 	if New(n).Monday().Format(format) != "2013-11-18 00:00:00" {
 		t.Errorf("Monday")
@@ -120,7 +120,7 @@ func TestMondayAndSunday(t *testing.T) {
 }
 
 func TestParse(t *testing.T) {
-	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.Now().Location())
+	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.UTC)
 	if New(n).MustParse("10-12").Format(format) != "2013-10-12 00:00:00" {
 		t.Errorf("Parse 10-12")
 	}
@@ -203,7 +203,7 @@ func Example() {
 	EndOfYear()           // 2013-12-31 23:59:59.999999999 Tue
 
 	// Use another time
-	t := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.Now().Location())
+	t := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.UTC)
 	New(t).EndOfMonth() // 2013-02-28 23:59:59.999999999 Thu
 
 	Monday()      // 2013-11-18 00:00:00 Mon
