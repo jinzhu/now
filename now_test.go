@@ -173,6 +173,10 @@ func TestParse(t *testing.T) {
 	if New(n).MustParse("04 Feb 12:09").Format(format) != "2013-02-04 12:09:00" {
 		t.Errorf("Parse 04 Feb 12:09 with specified format")
 	}
+
+	if New(n).MustParse("23:28:9 19 Dec 2013 PST").Format(format) != "2013-12-19 23:28:09" {
+		t.Errorf("Parse 23:28:9 19 Dec 2013 PST")
+	}
 }
 
 func Example() {
