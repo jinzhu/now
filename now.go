@@ -115,6 +115,11 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 		onlyTime := regexp.MustCompile(`^\s*\d+(:\d+)*\s*$`).MatchString(str) // match 15:04:05, 15
 
 		t, err = parseWithFormat(str)
+		location := t.Location()
+		if location.String() == "UTC" {
+			location = currentLocation
+		}
+
 		if err == nil {
 			parseTime = []int{t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
 			onlyTime = onlyTime && (parseTime[3] == 1) && (parseTime[4] == 1)
@@ -137,7 +142,7 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 		}
 
 		if len(parseTime) > 0 {
-			t = time.Date(parseTime[5], time.Month(parseTime[4]), parseTime[3], parseTime[2], parseTime[1], parseTime[0], 0, currentLocation)
+			t = time.Date(parseTime[5], time.Month(parseTime[4]), parseTime[3], parseTime[2], parseTime[1], parseTime[0], 0, location)
 			currentTime = []int{t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
 		}
 	}
