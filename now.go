@@ -15,8 +15,7 @@ func (now *Now) BeginningOfHour() time.Time {
 }
 
 func (now *Now) BeginningOfDay() time.Time {
-	d := time.Duration(-now.Hour()) * time.Hour
-	return now.BeginningOfHour().Add(d)
+	return now.Truncate(24 * time.Hour)
 }
 
 func (now *Now) BeginningOfWeek() time.Time {
