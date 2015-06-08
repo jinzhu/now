@@ -39,6 +39,12 @@ func (now *Now) BeginningOfMonth() time.Time {
 	return t.Add(d)
 }
 
+func (now *Now) BeginningOfQuarter() time.Time {
+	month := now.BeginningOfMonth()
+	offset := (int(month.Month()) - 1) % 3
+	return month.AddDate(0, -offset, 0)
+}
+
 func (now *Now) BeginningOfYear() time.Time {
 	t := now.BeginningOfDay()
 	d := time.Duration(-int(t.YearDay())+1) * 24 * time.Hour
@@ -63,6 +69,10 @@ func (now *Now) EndOfWeek() time.Time {
 
 func (now *Now) EndOfMonth() time.Time {
 	return now.BeginningOfMonth().AddDate(0, 1, 0).Add(-time.Nanosecond)
+}
+
+func (now *Now) EndOfQuarter() time.Time {
+	return now.BeginningOfQuarter().AddDate(0, 3, 0).Add(-time.Nanosecond)
 }
 
 func (now *Now) EndOfYear() time.Time {
