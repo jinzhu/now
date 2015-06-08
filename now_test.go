@@ -229,6 +229,7 @@ func Example() {
 	FirstDayMonday = true // Set Monday as first day
 	BeginningOfWeek()     // 2013-11-18 00:00:00 Mon
 	BeginningOfMonth()    // 2013-11-01 00:00:00 Fri
+	BeginningOfQuarter()  // 2013-10-01 00:00:00 Tue
 	BeginningOfYear()     // 2013-01-01 00:00:00 Tue
 
 	EndOfMinute() // 2013-11-18 17:51:59.999999999 Mon
@@ -239,6 +240,7 @@ func Example() {
 	FirstDayMonday = true // Set Monday as first day
 	EndOfWeek()           // 2013-11-24 23:59:59.999999999 Sun
 	EndOfMonth()          // 2013-11-30 23:59:59.999999999 Sat
+	EndOfQuarter()        // 2013-12-31 23:59:59.999999999 Tue
 	EndOfYear()           // 2013-12-31 23:59:59.999999999 Tue
 
 	// Use another time

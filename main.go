@@ -42,6 +42,10 @@ func BeginningOfMonth() time.Time {
 	return New(time.Now()).BeginningOfMonth()
 }
 
+func BeginningOfQuarter() time.Time {
+	return New(time.Now()).BeginningOfQuarter()
+}
+
 func BeginningOfYear() time.Time {
 	return New(time.Now()).BeginningOfYear()
 }
@@ -64,6 +68,10 @@ func EndOfWeek() time.Time {
 
 func EndOfMonth() time.Time {
 	return New(time.Now()).EndOfMonth()
+}
+
+func EndOfQuarter() time.Time {
+	return New(time.Now()).EndOfQuarter()
 }
 
 func EndOfYear() time.Time {
