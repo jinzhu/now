@@ -79,11 +79,11 @@ func EndOfYear() time.Time {
 }
 
 func Monday() time.Time {
-	return New(time.Now()).EndOfYear()
+	return New(time.Now()).Monday()
 }
 
 func Sunday() time.Time {
-	return New(time.Now()).EndOfYear()
+	return New(time.Now()).Sunday()
 }
 
 func EndOfSunday() time.Time {
