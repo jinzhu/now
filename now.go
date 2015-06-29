@@ -166,3 +166,9 @@ func (now *Now) MustParse(strs ...string) (t time.Time) {
 	}
 	return t
 }
+
+func (now *Now) Between(time1, time2 string)bool {
+	restime := now.MustParse(time1)
+	restime2 := now.MustParse(time2)
+	return now.After(restime) && now.Before(restime2)
+}
