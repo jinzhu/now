@@ -97,3 +97,7 @@ func Parse(strs ...string) (time.Time, error) {
 func MustParse(strs ...string) time.Time {
 	return New(time.Now()).MustParse(strs...)
 }
+
+func Between(t time.Time, time1, time2 string) bool {
+	return New(t).Between(time1, time2)
+}
