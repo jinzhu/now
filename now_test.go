@@ -183,6 +183,10 @@ func TestParse(t *testing.T) {
 		t.Errorf("Parse 18:20")
 	}
 
+	if New(n).MustParse("00:01").Format(format) != "2013-11-18 00:01:00" {
+		t.Errorf("Parse 00:01")
+	}
+
 	if New(n).MustParse("18:20:39").Format(format) != "2013-11-18 18:20:39" {
 		t.Errorf("Parse 18:20:39")
 	}
@@ -224,7 +228,7 @@ func TestBetween(t *testing.T) {
 		t.Errorf("Between")
 	}
 
-	if !New(tm).Between("2015-05-12 12:20", "2015-06-30 17:51:50"){
+	if !New(tm).Between("2015-05-12 12:20", "2015-06-30 17:51:50") {
 		t.Errorf("Between")
 	}
 }

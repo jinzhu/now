@@ -135,6 +135,11 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 			onlyTime = onlyTime && (parseTime[3] == 1) && (parseTime[4] == 1)
 
 			for i, v := range parseTime {
+				// Don't reset hour, minute, second if it is a time only string
+				if onlyTime && i <= 2 {
+					continue
+				}
+
 				// Fill up missed information with current time
 				if v == 0 {
 					if setCurrentTime {
@@ -145,8 +150,11 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 				}
 
 				// Default day and month is 1, fill up it if missing it
-				if (i == 3 || i == 4) && onlyTime {
-					parseTime[i] = currentTime[i]
+				if onlyTime {
+					if i == 3 || i == 4 {
+						parseTime[i] = currentTime[i]
+						continue
+					}
 				}
 			}
 		}
@@ -167,7 +175,7 @@ func (now *Now) MustParse(strs ...string) (t time.Time) {
 	return t
 }
 
-func (now *Now) Between(time1, time2 string)bool {
+func (now *Now) Between(time1, time2 string) bool {
 	restime := now.MustParse(time1)
 	restime2 := now.MustParse(time2)
 	return now.After(restime) && now.Before(restime2)
