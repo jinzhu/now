@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Now by jinzhu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Now</h1>
+      <h2 class="project-tagline">Now is a time toolkit for golang</h2>
+      <a href="https://github.com/jinzhu/now" class="btn">View on GitHub</a>
+      <a href="https://github.com/jinzhu/now/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/jinzhu/now/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h2>
+<a id="now" class="anchor" href="#now" aria-hidden="true"><span class="octicon octicon-link"></span></a>Now</h2>
+
+<p>Now is a time toolkit for golang</p>
+
+<h4>
+<a id="why-the-project-named-now" class="anchor" href="#why-the-project-named-now" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why the project named <code>Now</code>?</h4>
+
+<div class="highlight highlight-go"><pre>now.<span class="pl-c1">BeginningOfDay</span>()</pre></div>
+
+<p><code>now</code> is quite readable, aha?</p>
+
+<h4>
+<a id="but-now-is-so-common-i-cant-search-the-project-with-my-favorite-search-engine" class="anchor" href="#but-now-is-so-common-i-cant-search-the-project-with-my-favorite-search-engine" aria-hidden="true"><span class="octicon octicon-link"></span></a>But <code>now</code> is so common I can't search the project with my favorite search engine</h4>
+
+<ul>
+<li>Star it in github <a href="https://github.com/jinzhu/now">https://github.com/jinzhu/now</a>
+</li>
+<li>Search it with <a href="http://godoc.org">http://godoc.org</a>
+</li>
+</ul>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<div class="highlight highlight-go"><pre><span class="pl-k">import</span> <span class="pl-s"><span class="pl-pds">"</span>github.com/jinzhu/now<span class="pl-pds">"</span></span>
+
+time.<span class="pl-c1">Now</span>() <span class="pl-c">// 2013-11-18 17:51:49.123456789 Mon</span>
+
+now.<span class="pl-c1">BeginningOfMinute</span>()   <span class="pl-c">// 2013-11-18 17:51:00 Mon</span>
+now.<span class="pl-c1">BeginningOfHour</span>()     <span class="pl-c">// 2013-11-18 17:00:00 Mon</span>
+now.<span class="pl-c1">BeginningOfDay</span>()      <span class="pl-c">// 2013-11-18 00:00:00 Mon</span>
+now.<span class="pl-c1">BeginningOfWeek</span>()     <span class="pl-c">// 2013-11-17 00:00:00 Sun</span>
+now.<span class="pl-smi">FirstDayMonday</span> = <span class="pl-c1">true</span> <span class="pl-c">// Set Monday as first day, default is Sunday</span>
+now.<span class="pl-c1">BeginningOfWeek</span>()     <span class="pl-c">// 2013-11-18 00:00:00 Mon</span>
+now.<span class="pl-c1">BeginningOfMonth</span>()    <span class="pl-c">// 2013-11-01 00:00:00 Fri</span>
+now.<span class="pl-c1">BeginningOfQuarter</span>()  <span class="pl-c">// 2013-10-01 00:00:00 Tue</span>
+now.<span class="pl-c1">BeginningOfYear</span>()     <span class="pl-c">// 2013-01-01 00:00:00 Tue</span>
+
+now.<span class="pl-c1">EndOfMinute</span>()         <span class="pl-c">// 2013-11-18 17:51:59.999999999 Mon</span>
+now.<span class="pl-c1">EndOfHour</span>()           <span class="pl-c">// 2013-11-18 17:59:59.999999999 Mon</span>
+now.<span class="pl-c1">EndOfDay</span>()            <span class="pl-c">// 2013-11-18 23:59:59.999999999 Mon</span>
+now.<span class="pl-c1">EndOfWeek</span>()           <span class="pl-c">// 2013-11-23 23:59:59.999999999 Sat</span>
+now.<span class="pl-smi">FirstDayMonday</span> = <span class="pl-c1">true</span> <span class="pl-c">// Set Monday as first day, default is Sunday</span>
+now.<span class="pl-c1">EndOfWeek</span>()           <span class="pl-c">// 2013-11-24 23:59:59.999999999 Sun</span>
+now.<span class="pl-c1">EndOfMonth</span>()          <span class="pl-c">// 2013-11-30 23:59:59.999999999 Sat</span>
+now.<span class="pl-c1">EndOfQuarter</span>()        <span class="pl-c">// 2013-12-31 23:59:59.999999999 Tue</span>
+now.<span class="pl-c1">EndOfYear</span>()           <span class="pl-c">// 2013-12-31 23:59:59.999999999 Tue</span>
+
+
+<span class="pl-c">// Use another time</span>
+<span class="pl-smi">t</span> <span class="pl-k">:=</span> time.<span class="pl-c1">Date</span>(<span class="pl-c1">2013</span>, <span class="pl-c1">02</span>, <span class="pl-c1">18</span>, <span class="pl-c1">17</span>, <span class="pl-c1">51</span>, <span class="pl-c1">49</span>, <span class="pl-c1">123456789</span>, time.<span class="pl-c1">Now</span>().<span class="pl-c1">Location</span>())
+now.<span class="pl-c1">New</span>(t).<span class="pl-c1">EndOfMonth</span>()   <span class="pl-c">// 2013-02-28 23:59:59.999999999 Thu</span>
+
+
+<span class="pl-c">// Don't want be bothered with the First Day setting, Use Monday, Sunday</span>
+now.<span class="pl-c1">Monday</span>()              <span class="pl-c">// 2013-11-18 00:00:00 Mon</span>
+now.<span class="pl-c1">Sunday</span>()              <span class="pl-c">// 2013-11-24 00:00:00 Sun (Next Sunday)</span>
+now.<span class="pl-c1">EndOfSunday</span>()         <span class="pl-c">// 2013-11-24 23:59:59.999999999 Sun (End of next Sunday)</span>
+
+<span class="pl-smi">t</span> <span class="pl-k">:=</span> time.<span class="pl-c1">Date</span>(<span class="pl-c1">2013</span>, <span class="pl-c1">11</span>, <span class="pl-c1">24</span>, <span class="pl-c1">17</span>, <span class="pl-c1">51</span>, <span class="pl-c1">49</span>, <span class="pl-c1">123456789</span>, time.<span class="pl-c1">Now</span>().<span class="pl-c1">Location</span>()) <span class="pl-c">// 2013-11-24 17:51:49.123456789 Sun</span>
+now.<span class="pl-c1">New</span>(t).<span class="pl-c1">Monday</span>()       <span class="pl-c">// 2013-11-18 00:00:00 Sun (Last Monday if today is Sunday)</span>
+now.<span class="pl-c1">New</span>(t).<span class="pl-c1">Sunday</span>()       <span class="pl-c">// 2013-11-24 00:00:00 Sun (Beginning Of Today if today is Sunday)</span>
+now.<span class="pl-c1">New</span>(t).<span class="pl-c1">EndOfSunday</span>()  <span class="pl-c">// 2013-11-24 23:59:59.999999999 Sun (End of Today if today is Sunday)</span></pre></div>
+
+<h4>
+<a id="parse-string" class="anchor" href="#parse-string" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parse String</h4>
+
+<div class="highlight highlight-go"><pre>time.<span class="pl-c1">Now</span>() <span class="pl-c">// 2013-11-18 17:51:49.123456789 Mon</span>
+
+<span class="pl-c">// Parse(string) (time.Time, error)</span>
+<span class="pl-smi">t</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> now.<span class="pl-c1">Parse</span>(<span class="pl-s"><span class="pl-pds">"</span>12:20<span class="pl-pds">"</span></span>)            <span class="pl-c">// 2013-11-18 12:20:00, nil</span>
+<span class="pl-smi">t</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> now.<span class="pl-c1">Parse</span>(<span class="pl-s"><span class="pl-pds">"</span>1999-12-12 12:20<span class="pl-pds">"</span></span>) <span class="pl-c">// 1999-12-12 12:20:00, nil</span>
+<span class="pl-smi">t</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> now.<span class="pl-c1">Parse</span>(<span class="pl-s"><span class="pl-pds">"</span>99:99<span class="pl-pds">"</span></span>)            <span class="pl-c">// 2013-11-18 12:20:00, Can't parse string as time: 99:99</span>
+
+<span class="pl-c">// MustParse(string) time.Time</span>
+now.<span class="pl-c1">MustParse</span>(<span class="pl-s"><span class="pl-pds">"</span>2013-01-13<span class="pl-pds">"</span></span>)             <span class="pl-c">// 2013-01-13 00:00:00</span>
+now.<span class="pl-c1">MustParse</span>(<span class="pl-s"><span class="pl-pds">"</span>02-17<span class="pl-pds">"</span></span>)                  <span class="pl-c">// 2013-02-17 00:00:00</span>
+now.<span class="pl-c1">MustParse</span>(<span class="pl-s"><span class="pl-pds">"</span>2-17<span class="pl-pds">"</span></span>)                   <span class="pl-c">// 2013-02-17 00:00:00</span>
+now.<span class="pl-c1">MustParse</span>(<span class="pl-s"><span class="pl-pds">"</span>8<span class="pl-pds">"</span></span>)                      <span class="pl-c">// 2013-11-18 08:00:00</span>
+now.<span class="pl-c1">MustParse</span>(<span class="pl-s"><span class="pl-pds">"</span>2002-10-12 22:14<span class="pl-pds">"</span></span>)       <span class="pl-c">// 2002-10-12 22:14:00</span>
+now.<span class="pl-c1">MustParse</span>(<span class="pl-s"><span class="pl-pds">"</span>99:99<span class="pl-pds">"</span></span>)                  <span class="pl-c">// panic: Can't parse string as time: 99:99</span></pre></div>
+
+<p>Extend <code>now</code> to support more formats is quite easy, just update <code>TimeFormats</code> variable with <code>time.Format</code> like time layout</p>
+
+<div class="highlight highlight-go"><pre>now.<span class="pl-smi">TimeFormats</span> = <span class="pl-c1">append</span>(now.<span class="pl-smi">TimeFormats</span>, <span class="pl-s"><span class="pl-pds">"</span>02 Jan 2006 15:04<span class="pl-pds">"</span></span>)</pre></div>
+
+<p>Please send me pull requests if you want a format to be supported officially</p>
+
+<h1>
+<a id="author" class="anchor" href="#author" aria-hidden="true"><span class="octicon octicon-link"></span></a>Author</h1>
+
+<p><strong>jinzhu</strong></p>
+
+<ul>
+<li><a href="http://github.com/jinzhu">http://github.com/jinzhu</a></li>
+<li><a href="mailto:wosmvp@gmail.com">wosmvp@gmail.com</a></li>
+<li><a href="http://twitter.com/zhangjinzhu">http://twitter.com/zhangjinzhu</a></li>
+</ul>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Released under the <a href="http://www.opensource.org/licenses/MIT">MIT License</a>.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/jinzhu/now">Now</a> is maintained by <a href="https://github.com/jinzhu">jinzhu</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
