@@ -14,6 +14,12 @@ now.BeginningOfDay()
 * Star it in github [https://github.com/jinzhu/now](https://github.com/jinzhu/now)
 * Search it with [http://godoc.org](http://godoc.org)
 
+## Install
+
+```
+go get -u github.com/jinzhu/now
+```
+
 ### Usage
 
 ```go
