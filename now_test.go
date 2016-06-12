@@ -155,6 +155,10 @@ func TestParse(t *testing.T) {
 		t.Errorf("Parse 10-12")
 	}
 
+	if New(n).MustParse("2013-12-19 23:28:09.999999999 +0800 CST").Format(format) != "2013-12-19 23:28:09" {
+		t.Errorf("Parse two strings 2013-12-19 23:28:09.999999999 +0800 CST")
+	}
+
 	if New(n).MustParse("2002-10-12 22:14").Format(format) != "2002-10-12 22:14:00" {
 		t.Errorf("Parse 2002-10-12 22:14")
 	}
