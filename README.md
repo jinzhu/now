@@ -91,6 +91,12 @@ now.TimeFormats = append(now.TimeFormats, "02 Jan 2006 15:04")
 
 Please send me pull requests if you want a format to be supported officially
 
+
+# Supporting the project
+
+[![http://patreon.com/jinzhu](http://patreon_public_assets.s3.amazonaws.com/sized/becomeAPatronBanner.png)](http://patreon.com/jinzhu)
+
+
 # Author
 
 **jinzhu**
