@@ -28,15 +28,40 @@ func TestBeginningOf(t *testing.T) {
 		t.Errorf("BeginningOfDay")
 	}
 
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-17 00:00:00" {
-		t.Errorf("BeginningOfWeek")
-	}
-
-	FirstDayMonday = true
+	WeekStartDay = time.Monday
 	if New(n).BeginningOfWeek().Format(format) != "2013-11-18 00:00:00" {
 		t.Errorf("BeginningOfWeek, FirstDayMonday")
 	}
-	FirstDayMonday = false
+
+	WeekStartDay = time.Tuesday
+	if New(n).BeginningOfWeek().Format(format) != "2013-11-12 00:00:00" {
+		t.Errorf("BeginningOfWeek, FirstDayTuesday")
+	}
+
+	WeekStartDay = time.Wednesday
+	if New(n).BeginningOfWeek().Format(format) != "2013-11-13 00:00:00" {
+		t.Errorf("BeginningOfWeek, FirstDayWednesday")
+	}
+
+	WeekStartDay = time.Thursday
+	if New(n).BeginningOfWeek().Format(format) != "2013-11-14 00:00:00" {
+		t.Errorf("BeginningOfWeek, FirstDayThursday")
+	}
+
+	WeekStartDay = time.Friday
+	if New(n).BeginningOfWeek().Format(format) != "2013-11-15 00:00:00" {
+		t.Errorf("BeginningOfWeek, FirstDayFriday")
+	}
+
+	WeekStartDay = time.Saturday
+	if New(n).BeginningOfWeek().Format(format) != "2013-11-16 00:00:00" {
+		t.Errorf("BeginningOfWeek, FirstDaySaturday")
+	}
+
+	WeekStartDay = time.Sunday
+	if New(n).BeginningOfWeek().Format(format) != "2013-11-17 00:00:00" {
+		t.Errorf("BeginningOfWeek, FirstDaySunday")
+	}
 
 	if New(n).BeginningOfMonth().Format(format) != "2013-11-01 00:00:00" {
 		t.Errorf("BeginningOfMonth")
@@ -74,14 +99,39 @@ func TestEndOf(t *testing.T) {
 		t.Errorf("EndOfDay")
 	}
 
-	FirstDayMonday = true
+	WeekStartDay = time.Monday
 	if New(n).EndOfWeek().Format(format) != "2013-11-24 23:59:59.999999999" {
 		t.Errorf("EndOfWeek, FirstDayMonday")
 	}
 
-	FirstDayMonday = false
+	WeekStartDay = time.Tuesday
+	if New(n).EndOfWeek().Format(format) != "2013-11-18 23:59:59.999999999" {
+		t.Errorf("EndOfWeek, FirstDayTuesday")
+	}
+
+	WeekStartDay = time.Wednesday
+	if New(n).EndOfWeek().Format(format) != "2013-11-19 23:59:59.999999999" {
+		t.Errorf("EndOfWeek, FirstDayWednesday")
+	}
+
+	WeekStartDay = time.Thursday
+	if New(n).EndOfWeek().Format(format) != "2013-11-20 23:59:59.999999999" {
+		t.Errorf("EndOfWeek, FirstDayThursday")
+	}
+
+	WeekStartDay = time.Friday
+	if New(n).EndOfWeek().Format(format) != "2013-11-21 23:59:59.999999999" {
+		t.Errorf("EndOfWeek, FirstDayFriday")
+	}
+
+	WeekStartDay = time.Saturday
+	if New(n).EndOfWeek().Format(format) != "2013-11-22 23:59:59.999999999" {
+		t.Errorf("EndOfWeek, FirstDaySaturday")
+	}
+
+	WeekStartDay = time.Sunday
 	if New(n).EndOfWeek().Format(format) != "2013-11-23 23:59:59.999999999" {
-		t.Errorf("EndOfWeek")
+		t.Errorf("EndOfWeek, FirstDaySunday")
 	}
 
 	if New(n).EndOfMonth().Format(format) != "2013-11-30 23:59:59.999999999" {
@@ -143,7 +193,7 @@ func TestMondayAndSunday(t *testing.T) {
 		t.Errorf("BeginningOfWeek, FirstDayMonday")
 	}
 
-	FirstDayMonday = true
+	WeekStartDay = time.Monday
 	if New(n).BeginningOfWeek().Format(format) != "2013-11-18 00:00:00" {
 		t.Errorf("BeginningOfWeek, FirstDayMonday")
 	}
@@ -245,22 +295,22 @@ func Example() {
 	BeginningOfDay()    // 2013-11-18 00:00:00 Mon
 	BeginningOfWeek()   // 2013-11-17 00:00:00 Sun
 
-	FirstDayMonday = true // Set Monday as first day
-	BeginningOfWeek()     // 2013-11-18 00:00:00 Mon
-	BeginningOfMonth()    // 2013-11-01 00:00:00 Fri
-	BeginningOfQuarter()  // 2013-10-01 00:00:00 Tue
-	BeginningOfYear()     // 2013-01-01 00:00:00 Tue
+	WeekStartDay = time.Monday // Set Monday as first day
+	BeginningOfWeek()          // 2013-11-18 00:00:00 Mon
+	BeginningOfMonth()         // 2013-11-01 00:00:00 Fri
+	BeginningOfQuarter()       // 2013-10-01 00:00:00 Tue
+	BeginningOfYear()          // 2013-01-01 00:00:00 Tue
 
 	EndOfMinute() // 2013-11-18 17:51:59.999999999 Mon
 	EndOfHour()   // 2013-11-18 17:59:59.999999999 Mon
 	EndOfDay()    // 2013-11-18 23:59:59.999999999 Mon
 	EndOfWeek()   // 2013-11-23 23:59:59.999999999 Sat
 
-	FirstDayMonday = true // Set Monday as first day
-	EndOfWeek()           // 2013-11-24 23:59:59.999999999 Sun
-	EndOfMonth()          // 2013-11-30 23:59:59.999999999 Sat
-	EndOfQuarter()        // 2013-12-31 23:59:59.999999999 Tue
-	EndOfYear()           // 2013-12-31 23:59:59.999999999 Tue
+	WeekStartDay = time.Monday // Set Monday as first day
+	EndOfWeek()                // 2013-11-24 23:59:59.999999999 Sun
+	EndOfMonth()               // 2013-11-30 23:59:59.999999999 Sat
+	EndOfQuarter()             // 2013-12-31 23:59:59.999999999 Tue
+	EndOfYear()                // 2013-12-31 23:59:59.999999999 Tue
 
 	// Use another time
 	t := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.UTC)
