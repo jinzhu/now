@@ -7,226 +7,221 @@ import (
 
 var format = "2006-01-02 15:04:05.999999999"
 
+var locationCaracas *time.Location
+var locationBerlin *time.Location
+var timeCaracas time.Time
+
+func init() {
+	var err error
+	locationCaracas, err = time.LoadLocation("America/Caracas")
+	if err != nil {
+		panic(err)
+	}
+	locationBerlin, err = time.LoadLocation("Europe/Berlin")
+	if err != nil {
+		panic(err)
+	}
+	timeCaracas = time.Date(2016, 1, 1, 12, 10, 0, 0, locationCaracas)
+}
+
+func assertT(t *testing.T) func(time.Time, string, string) {
+	return func(actual time.Time, expected string, msg string) {
+		actualStr := actual.Format(format)
+		if actualStr != expected {
+			t.Errorf("Failed %s: actual: %v, expected: %v", msg, actualStr, expected)
+		}
+	}
+}
+
 func TestBeginningOf(t *testing.T) {
+	assert := assertT(t)
+
 	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.UTC)
 
-	if New(n).BeginningOfMinute().Format(format) != "2013-11-18 17:51:00" {
-		t.Errorf("BeginningOfMinute")
-	}
+	assert(New(n).BeginningOfMinute(), "2013-11-18 17:51:00", "BeginningOfMinute")
 
-	if New(n).BeginningOfHour().Format(format) != "2013-11-18 17:00:00" {
-		t.Errorf("BeginningOfHour")
-	}
+	assert(New(n).BeginningOfHour(), "2013-11-18 17:00:00", "BeginningOfHour")
 
 	// Truncate with hour bug
-	location, err := time.LoadLocation("America/Caracas")
-	if err != nil {
-		t.Fatalf("Error loading location: %v", err)
-	}
-	if New(time.Date(2016, 1, 1, 12, 10, 0, 0, location)).BeginningOfHour().Format(format) != "2016-01-01 12:00:00" {
-		t.Errorf("BeginningOfHour Caracas")
-	}
+	assert(New(timeCaracas).BeginningOfHour(), "2016-01-01 12:00:00", "BeginningOfHour Caracas")
 
-	if New(n).BeginningOfDay().Format(format) != "2013-11-18 00:00:00" {
-		t.Errorf("BeginningOfDay")
-	}
+	assert(New(n).BeginningOfDay(), "2013-11-18 00:00:00", "BeginningOfDay")
 
-	location, err = time.LoadLocation("Japan")
+	location, err := time.LoadLocation("Japan")
 	if err != nil {
 		t.Fatalf("Error loading location: %v", err)
 	}
 	beginningOfDay := time.Date(2015, 05, 01, 0, 0, 0, 0, location)
-	if New(beginningOfDay).BeginningOfDay().Format(format) != "2015-05-01 00:00:00" {
-		t.Errorf("BeginningOfDay")
-	}
+	assert(New(beginningOfDay).BeginningOfDay(), "2015-05-01 00:00:00", "BeginningOfDay")
 
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-17 00:00:00" {
-		t.Errorf("BeginningOfWeek")
-	}
+	// DST
+	dstBeginningOfDay := time.Date(2017, 10, 29, 10, 0, 0, 0, locationBerlin)
+	assert(New(dstBeginningOfDay).BeginningOfDay(), "2017-10-29 00:00:00", "BeginningOfDay DST")
+
+	assert(New(n).BeginningOfWeek(), "2013-11-17 00:00:00", "BeginningOfWeek")
+
+	dstBegginingOfWeek := time.Date(2017, 10, 30, 12, 0, 0, 0, locationBerlin)
+	assert(New(dstBegginingOfWeek).BeginningOfWeek(), "2017-10-29 00:00:00", "BeginningOfWeek")
+
+	dstBegginingOfWeek = time.Date(2017, 10, 29, 12, 0, 0, 0, locationBerlin)
+	assert(New(dstBegginingOfWeek).BeginningOfWeek(), "2017-10-29 00:00:00", "BeginningOfWeek")
 
 	FirstDayMonday = true
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-18 00:00:00" {
-		t.Errorf("BeginningOfWeek, FirstDayMonday")
-	}
+	assert(New(n).BeginningOfWeek(), "2013-11-18 00:00:00", "BeginningOfWeek, FirstDayMonday")
+	dstBegginingOfWeek = time.Date(2017, 10, 24, 12, 0, 0, 0, locationBerlin)
+	assert(New(dstBegginingOfWeek).BeginningOfWeek(), "2017-10-23 00:00:00", "BeginningOfWeek, FirstDayMonday")
+
+	dstBegginingOfWeek = time.Date(2017, 10, 29, 12, 0, 0, 0, locationBerlin)
+	assert(New(dstBegginingOfWeek).BeginningOfWeek(), "2017-10-23 00:00:00", "BeginningOfWeek, FirstDayMonday")
+
 	FirstDayMonday = false
 
-	if New(n).BeginningOfMonth().Format(format) != "2013-11-01 00:00:00" {
-		t.Errorf("BeginningOfMonth")
-	}
+	assert(New(n).BeginningOfMonth(), "2013-11-01 00:00:00", "BeginningOfMonth")
 
-	if New(n).BeginningOfQuarter().Format(format) != "2013-10-01 00:00:00" {
-		t.Error("BeginningOfQuarter")
-	}
+	// DST
+	dstBeginningOfMonth := time.Date(2017, 10, 31, 0, 0, 0, 0, locationBerlin)
+	assert(New(dstBeginningOfMonth).BeginningOfMonth(), "2017-10-01 00:00:00", "BeginningOfMonth DST")
 
-	if New(n.AddDate(0, -1, 0)).BeginningOfQuarter().Format(format) != "2013-10-01 00:00:00" {
-		t.Error("BeginningOfQuarter")
-	}
+	assert(New(n).BeginningOfQuarter(), "2013-10-01 00:00:00", "BeginningOfQuarter")
 
-	if New(n.AddDate(0, 1, 0)).BeginningOfQuarter().Format(format) != "2013-10-01 00:00:00" {
-		t.Error("BeginningOfQuarter")
-	}
+	// DST
+	assert(New(dstBeginningOfMonth).BeginningOfQuarter(), "2017-10-01 00:00:00", "BeginningOfQuarter DST")
+	dstBeginningOfQuarter := time.Date(2017, 11, 24, 0, 0, 0, 0, locationBerlin)
+	assert(New(dstBeginningOfQuarter).BeginningOfQuarter(), "2017-10-01 00:00:00", "BeginningOfQuarter DST")
 
-	if New(n).BeginningOfYear().Format(format) != "2013-01-01 00:00:00" {
-		t.Errorf("BeginningOfYear")
-	}
+	assert(New(n.AddDate(0, -1, 0)).BeginningOfQuarter(), "2013-10-01 00:00:00", "BeginningOfQuarter")
+
+	assert(New(n.AddDate(0, 1, 0)).BeginningOfQuarter(), "2013-10-01 00:00:00", "BeginningOfQuarter")
+
+	// DST
+	assert(New(dstBeginningOfQuarter).BeginningOfYear(), "2017-01-01 00:00:00", "BeginningOfYear DST")
+
+	assert(New(timeCaracas).BeginningOfYear(), "2016-01-01 00:00:00", "BeginningOfYear Caracas")
 }
 
 func TestEndOf(t *testing.T) {
+	assert := assertT(t)
+
 	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.UTC)
 
-	if New(n).EndOfMinute().Format(format) != "2013-11-18 17:51:59.999999999" {
-		t.Errorf("EndOfMinute")
-	}
+	assert(New(n).EndOfMinute(), "2013-11-18 17:51:59.999999999", "EndOfMinute")
 
-	if New(n).EndOfHour().Format(format) != "2013-11-18 17:59:59.999999999" {
-		t.Errorf("EndOfHour")
-	}
+	assert(New(n).EndOfHour(), "2013-11-18 17:59:59.999999999", "EndOfHour")
 
-	if New(n).EndOfDay().Format(format) != "2013-11-18 23:59:59.999999999" {
-		t.Errorf("EndOfDay")
-	}
+	assert(New(timeCaracas).EndOfHour(), "2016-01-01 12:59:59.999999999", "EndOfHour Caracas")
+
+	assert(New(n).EndOfDay(), "2013-11-18 23:59:59.999999999", "EndOfDay")
+
+	dstEndOfDay := time.Date(2017, 10, 29, 1, 0, 0, 0, locationBerlin)
+	assert(New(dstEndOfDay).EndOfDay(), "2017-10-29 23:59:59.999999999", "EndOfDay DST")
 
 	FirstDayMonday = true
-	if New(n).EndOfWeek().Format(format) != "2013-11-24 23:59:59.999999999" {
-		t.Errorf("EndOfWeek, FirstDayMonday")
-	}
+	assert(New(n).EndOfWeek(), "2013-11-24 23:59:59.999999999", "EndOfWeek, FirstDayMonday")
+
+	dstEndOfWeek := time.Date(2017, 10, 24, 12, 0, 0, 0, locationBerlin)
+	assert(New(dstEndOfWeek).EndOfWeek(), "2017-10-29 23:59:59.999999999", "EndOfWeek, FirstDayMonday")
+
+	dstEndOfWeek = time.Date(2017, 10, 29, 12, 0, 0, 0, locationBerlin)
+	assert(New(dstEndOfWeek).EndOfWeek(), "2017-10-29 23:59:59.999999999", "EndOfWeek, FirstDayMonday")
 
 	FirstDayMonday = false
-	if New(n).EndOfWeek().Format(format) != "2013-11-23 23:59:59.999999999" {
-		t.Errorf("EndOfWeek")
-	}
+	assert(New(n).EndOfWeek(), "2013-11-23 23:59:59.999999999", "EndOfWeek")
 
-	if New(n).EndOfMonth().Format(format) != "2013-11-30 23:59:59.999999999" {
-		t.Errorf("EndOfMonth")
-	}
+	dstEndOfWeek = time.Date(2017, 10, 29, 0, 0, 0, 0, locationBerlin)
+	assert(New(dstEndOfWeek).EndOfWeek(), "2017-11-04 23:59:59.999999999", "EndOfWeek")
 
-	if New(n).EndOfQuarter().Format(format) != "2013-12-31 23:59:59.999999999" {
-		t.Errorf("EndOfQuarter")
-	}
+	dstEndOfWeek = time.Date(2017, 10, 29, 12, 0, 0, 0, locationBerlin)
+	assert(New(dstEndOfWeek).EndOfWeek(), "2017-11-04 23:59:59.999999999", "EndOfWeek")
 
-	if New(n.AddDate(0, -1, 0)).EndOfQuarter().Format(format) != "2013-12-31 23:59:59.999999999" {
-		t.Errorf("EndOfQuarter")
-	}
+	assert(New(n).EndOfMonth(), "2013-11-30 23:59:59.999999999", "EndOfMonth")
 
-	if New(n.AddDate(0, 1, 0)).EndOfQuarter().Format(format) != "2013-12-31 23:59:59.999999999" {
-		t.Errorf("EndOfQuarter")
-	}
+	assert(New(n).EndOfQuarter(), "2013-12-31 23:59:59.999999999", "EndOfQuarter")
 
-	if New(n).EndOfYear().Format(format) != "2013-12-31 23:59:59.999999999" {
-		t.Errorf("EndOfYear")
-	}
+	assert(New(n.AddDate(0, -1, 0)).EndOfQuarter(), "2013-12-31 23:59:59.999999999", "EndOfQuarter")
+
+	assert(New(n.AddDate(0, 1, 0)).EndOfQuarter(), "2013-12-31 23:59:59.999999999", "EndOfQuarter")
+
+	assert(New(n).EndOfYear(), "2013-12-31 23:59:59.999999999", "EndOfYear")
 
 	n1 := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.UTC)
-	if New(n1).EndOfMonth().Format(format) != "2013-02-28 23:59:59.999999999" {
-		t.Errorf("EndOfMonth for 2013/02")
-	}
+	assert(New(n1).EndOfMonth(), "2013-02-28 23:59:59.999999999", "EndOfMonth for 2013/02")
 
 	n2 := time.Date(1900, 02, 18, 17, 51, 49, 123456789, time.UTC)
-	if New(n2).EndOfMonth().Format(format) != "1900-02-28 23:59:59.999999999" {
-		t.Errorf("EndOfMonth")
-	}
+	assert(New(n2).EndOfMonth(), "1900-02-28 23:59:59.999999999", "EndOfMonth")
 }
 
 func TestMondayAndSunday(t *testing.T) {
+	assert := assertT(t)
+
 	n := time.Date(2013, 11, 19, 17, 51, 49, 123456789, time.UTC)
 	n2 := time.Date(2013, 11, 24, 17, 51, 49, 123456789, time.UTC)
+	nDst := time.Date(2017, 10, 29, 10, 0, 0, 0, locationBerlin)
 
-	if New(n).Monday().Format(format) != "2013-11-18 00:00:00" {
-		t.Errorf("Monday")
-	}
+	assert(New(n).Monday(), "2013-11-18 00:00:00", "Monday")
 
-	if New(n2).Monday().Format(format) != "2013-11-18 00:00:00" {
-		t.Errorf("Monday")
-	}
+	assert(New(n2).Monday(), "2013-11-18 00:00:00", "Monday")
 
-	if New(n).Sunday().Format(format) != "2013-11-24 00:00:00" {
-		t.Errorf("Sunday")
-	}
+	assert(New(timeCaracas).Monday(), "2015-12-28 00:00:00", "Monday Caracas")
 
-	if New(n2).Sunday().Format(format) != "2013-11-24 00:00:00" {
-		t.Errorf("Sunday")
-	}
+	assert(New(nDst).Monday(), "2017-10-23 00:00:00", "Monday DST")
 
-	if New(n).EndOfSunday().Format(format) != "2013-11-24 23:59:59.999999999" {
-		t.Errorf("Sunday")
-	}
+	assert(New(n).Sunday(), "2013-11-24 00:00:00", "Sunday")
 
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-17 00:00:00" {
-		t.Errorf("BeginningOfWeek, FirstDayMonday")
-	}
+	assert(New(n2).Sunday(), "2013-11-24 00:00:00", "Sunday")
+
+	assert(New(timeCaracas).Sunday(), "2016-01-03 00:00:00", "Sunday Caracas")
+
+	assert(New(nDst).Sunday(), "2017-10-29 00:00:00", "Sunday DST")
+
+	assert(New(n).EndOfSunday(), "2013-11-24 23:59:59.999999999", "EndOfSunday")
+
+	assert(New(timeCaracas).EndOfSunday(), "2016-01-03 23:59:59.999999999", "EndOfSunday Caracas")
+
+	assert(New(nDst).EndOfSunday(), "2017-10-29 23:59:59.999999999", "EndOfSunday DST")
+
+	assert(New(n).BeginningOfWeek(), "2013-11-17 00:00:00", "BeginningOfWeek, FirstDayMonday")
 
 	FirstDayMonday = true
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-18 00:00:00" {
-		t.Errorf("BeginningOfWeek, FirstDayMonday")
-	}
+	assert(New(n).BeginningOfWeek(), "2013-11-18 00:00:00", "BeginningOfWeek, FirstDayMonday")
 }
 
 func TestParse(t *testing.T) {
+	assert := assertT(t)
+
 	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.UTC)
-	if New(n).MustParse("10-12").Format(format) != "2013-10-12 00:00:00" {
-		t.Errorf("Parse 10-12")
-	}
 
-	if New(n).MustParse("2013-12-19 23:28:09.999999999 +0800 CST").Format(format) != "2013-12-19 23:28:09" {
-		t.Errorf("Parse two strings 2013-12-19 23:28:09.999999999 +0800 CST")
-	}
+	assert(New(n).MustParse("10-12"), "2013-10-12 00:00:00", "Parse 10-12")
 
-	if New(n).MustParse("2002-10-12 22:14").Format(format) != "2002-10-12 22:14:00" {
-		t.Errorf("Parse 2002-10-12 22:14")
-	}
+	assert(New(n).MustParse("2013-12-19 23:28:09.999999999 +0800 CST"), "2013-12-19 23:28:09", "Parse two strings 2013-12-19 23:28:09.999999999 +0800 CST")
 
-	if New(n).MustParse("2002-10-12 2:4").Format(format) != "2002-10-12 02:04:00" {
-		t.Errorf("Parse 2002-10-12 2:4")
-	}
+	assert(New(n).MustParse("2002-10-12 22:14"), "2002-10-12 22:14:00", "Parse 2002-10-12 22:14")
 
-	if New(n).MustParse("2002-10-12 02:04").Format(format) != "2002-10-12 02:04:00" {
-		t.Errorf("Parse 2002-10-12 02:04")
-	}
+	assert(New(n).MustParse("2002-10-12 2:4"), "2002-10-12 02:04:00", "Parse 2002-10-12 2:4")
 
-	if New(n).MustParse("2002-10-12 22:14:56").Format(format) != "2002-10-12 22:14:56" {
-		t.Errorf("Parse 2002-10-12 22:14:56")
-	}
+	assert(New(n).MustParse("2002-10-12 02:04"), "2002-10-12 02:04:00", "Parse 2002-10-12 02:04")
 
-	if New(n).MustParse("2002-10-12").Format(format) != "2002-10-12 00:00:00" {
-		t.Errorf("Parse 2002-10-12")
-	}
+	assert(New(n).MustParse("2002-10-12 22:14:56"), "2002-10-12 22:14:56", "Parse 2002-10-12 22:14:56")
 
-	if New(n).MustParse("18").Format(format) != "2013-11-18 18:00:00" {
-		t.Errorf("Parse 18 as hour")
-	}
+	assert(New(n).MustParse("2002-10-12"), "2002-10-12 00:00:00", "Parse 2002-10-12")
 
-	if New(n).MustParse("18:20").Format(format) != "2013-11-18 18:20:00" {
-		t.Errorf("Parse 18:20")
-	}
+	assert(New(n).MustParse("18"), "2013-11-18 18:00:00", "Parse 18 as hour")
 
-	if New(n).MustParse("00:01").Format(format) != "2013-11-18 00:01:00" {
-		t.Errorf("Parse 00:01")
-	}
+	assert(New(n).MustParse("18:20"), "2013-11-18 18:20:00", "Parse 18:20")
 
-	if New(n).MustParse("18:20:39").Format(format) != "2013-11-18 18:20:39" {
-		t.Errorf("Parse 18:20:39")
-	}
+	assert(New(n).MustParse("00:01"), "2013-11-18 00:01:00", "Parse 00:01")
 
-	if New(n).MustParse("18:20:39", "2011-01-01").Format(format) != "2011-01-01 18:20:39" {
-		t.Errorf("Parse two strings 18:20:39, 2011-01-01")
-	}
+	assert(New(n).MustParse("18:20:39"), "2013-11-18 18:20:39", "Parse 18:20:39")
 
-	if New(n).MustParse("2011-1-1", "18:20:39").Format(format) != "2011-01-01 18:20:39" {
-		t.Errorf("Parse two strings 2011-01-01, 18:20:39")
-	}
+	assert(New(n).MustParse("18:20:39", "2011-01-01"), "2011-01-01 18:20:39", "Parse two strings 18:20:39, 2011-01-01")
 
-	if New(n).MustParse("2011-01-01", "18").Format(format) != "2011-01-01 18:00:00" {
-		t.Errorf("Parse two strings 2011-01-01, 18")
-	}
+	assert(New(n).MustParse("2011-1-1", "18:20:39"), "2011-01-01 18:20:39", "Parse two strings 2011-01-01, 18:20:39")
+
+	assert(New(n).MustParse("2011-01-01", "18"), "2011-01-01 18:00:00", "Parse two strings 2011-01-01, 18")
 
 	TimeFormats = append(TimeFormats, "02 Jan 15:04")
-	if New(n).MustParse("04 Feb 12:09").Format(format) != "2013-02-04 12:09:00" {
-		t.Errorf("Parse 04 Feb 12:09 with specified format")
-	}
+	assert(New(n).MustParse("04 Feb 12:09"), "2013-02-04 12:09:00", "Parse 04 Feb 12:09 with specified format")
 
-	if New(n).MustParse("23:28:9 Dec 19, 2013 PST").Format(format) != "2013-12-19 23:28:09" {
-		t.Errorf("Parse 23:28:9 Dec 19, 2013 PST")
-	}
+	assert(New(n).MustParse("23:28:9 Dec 19, 2013 PST"), "2013-12-19 23:28:09", "Parse 23:28:9 Dec 19, 2013 PST")
 
 	if New(n).MustParse("23:28:9 Dec 19, 2013 PST").Location().String() != "PST" {
 		t.Errorf("Parse 23:28:9 Dec 19, 2013 PST shouldn't lose time zone")

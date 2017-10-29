@@ -16,8 +16,8 @@ func (now *Now) BeginningOfHour() time.Time {
 }
 
 func (now *Now) BeginningOfDay() time.Time {
-	d := time.Duration(-now.Hour()) * time.Hour
-	return now.BeginningOfHour().Add(d)
+	y, m, d := now.Date()
+	return time.Date(y, m, d, 0, 0, 0, 0, now.Location())
 }
 
 func (now *Now) BeginningOfWeek() time.Time {
@@ -29,15 +29,12 @@ func (now *Now) BeginningOfWeek() time.Time {
 		}
 		weekday = weekday - 1
 	}
-
-	d := time.Duration(-weekday) * 24 * time.Hour
-	return t.Add(d)
+	return t.AddDate(0, 0, -weekday)
 }
 
 func (now *Now) BeginningOfMonth() time.Time {
-	t := now.BeginningOfDay()
-	d := time.Duration(-int(t.Day())+1) * 24 * time.Hour
-	return t.Add(d)
+	y, m, _ := now.Date()
+	return time.Date(y, m, 1, 0, 0, 0, 0, now.Location())
 }
 
 func (now *Now) BeginningOfQuarter() time.Time {
@@ -47,9 +44,8 @@ func (now *Now) BeginningOfQuarter() time.Time {
 }
 
 func (now *Now) BeginningOfYear() time.Time {
-	t := now.BeginningOfDay()
-	d := time.Duration(-int(t.YearDay())+1) * 24 * time.Hour
-	return t.Truncate(time.Hour).Add(d)
+	y, _, _ := now.Date()
+	return time.Date(y, time.January, 1, 0, 0, 0, 0, now.Location())
 }
 
 func (now *Now) EndOfMinute() time.Time {
@@ -61,7 +57,8 @@ func (now *Now) EndOfHour() time.Time {
 }
 
 func (now *Now) EndOfDay() time.Time {
-	return now.BeginningOfDay().Add(24*time.Hour - time.Nanosecond)
+	y, m, d := now.Date()
+	return time.Date(y, m, d, 23, 59, 59, int(time.Second-time.Nanosecond), now.Location())
 }
 
 func (now *Now) EndOfWeek() time.Time {
@@ -86,8 +83,7 @@ func (now *Now) Monday() time.Time {
 	if weekday == 0 {
 		weekday = 7
 	}
-	d := time.Duration(-weekday+1) * 24 * time.Hour
-	return t.Truncate(time.Hour).Add(d)
+	return t.AddDate(0, 0, -weekday+1)
 }
 
 func (now *Now) Sunday() time.Time {
@@ -96,13 +92,12 @@ func (now *Now) Sunday() time.Time {
 	if weekday == 0 {
 		return t
 	} else {
-		d := time.Duration(7-weekday) * 24 * time.Hour
-		return t.Truncate(time.Hour).Add(d)
+		return t.AddDate(0, 0, (7 - weekday))
 	}
 }
 
 func (now *Now) EndOfSunday() time.Time {
-	return now.Sunday().Add(24*time.Hour - time.Nanosecond)
+	return New(now.Sunday()).EndOfDay()
 }
 
 func parseWithFormat(str string) (t time.Time, err error) {
