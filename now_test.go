@@ -18,11 +18,23 @@ func TestBeginningOf(t *testing.T) {
 		t.Errorf("BeginningOfHour")
 	}
 
+	// Truncate with hour bug
+	location, err := time.LoadLocation("America/Caracas")
+	if err != nil {
+		t.Fatalf("Error loading location: %v", err)
+	}
+	if New(time.Date(2016, 1, 1, 12, 10, 0, 0, location)).BeginningOfHour().Format(format) != "2016-01-01 12:00:00" {
+		t.Errorf("BeginningOfHour Caracas")
+	}
+
 	if New(n).BeginningOfDay().Format(format) != "2013-11-18 00:00:00" {
 		t.Errorf("BeginningOfDay")
 	}
 
-	location, _ := time.LoadLocation("Japan")
+	location, err = time.LoadLocation("Japan")
+	if err != nil {
+		t.Fatalf("Error loading location: %v", err)
+	}
 	beginningOfDay := time.Date(2015, 05, 01, 0, 0, 0, 0, location)
 	if New(beginningOfDay).BeginningOfDay().Format(format) != "2015-05-01 00:00:00" {
 		t.Errorf("BeginningOfDay")

@@ -11,7 +11,8 @@ func (now *Now) BeginningOfMinute() time.Time {
 }
 
 func (now *Now) BeginningOfHour() time.Time {
-	return now.Truncate(time.Hour)
+	y, m, d := now.Date()
+	return time.Date(y, m, d, now.Hour(), 0, 0, 0, now.Location())
 }
 
 func (now *Now) BeginningOfDay() time.Time {
