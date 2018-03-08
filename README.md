@@ -2,6 +2,8 @@
 
 Now is a time toolkit for golang
 
+[![wercker status](https://app.wercker.com/status/a350da4eae6cb28a35687ba41afb565a/s/master "wercker status")](https://app.wercker.com/project/byKey/a350da4eae6cb28a35687ba41afb565a)
+
 #### Why the project named `Now`?
 
 ```go
