@@ -274,6 +274,11 @@ func TestParse(t *testing.T) {
 	if New(n2).MustParse("10:20").Location().String() != "PST" {
 		t.Errorf("Parse 10:20 shouldn't change time zone")
 	}
+
+	TimeFormats = append(TimeFormats, "2006-01-02T15:04:05.0")
+	if MustParseInLocation(time.UTC, "2018-02-13T15:17:06.0").String() != "2018-02-13 15:17:06 +0000 UTC" {
+		t.Errorf("ParseInLocation 2018-02-13T15:17:06.0")
+	}
 }
 
 func TestBetween(t *testing.T) {

@@ -94,8 +94,16 @@ func Parse(strs ...string) (time.Time, error) {
 	return New(time.Now()).Parse(strs...)
 }
 
+func ParseInLocation(loc *time.Location, strs ...string) (time.Time, error) {
+	return New(time.Now().In(loc)).Parse(strs...)
+}
+
 func MustParse(strs ...string) time.Time {
 	return New(time.Now()).MustParse(strs...)
+}
+
+func MustParseInLocation(loc *time.Location, strs ...string) time.Time {
+	return New(time.Now().In(loc)).MustParse(strs...)
 }
 
 func Between(time1, time2 string) bool {
