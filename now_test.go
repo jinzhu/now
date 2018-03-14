@@ -5,22 +5,23 @@ import (
 	"time"
 )
 
-var format = "2006-01-02 15:04:05.999999999"
-
-var locationCaracas *time.Location
-var locationBerlin *time.Location
-var timeCaracas time.Time
+var (
+	format          = "2006-01-02 15:04:05.999999999"
+	locationCaracas *time.Location
+	locationBerlin  *time.Location
+	timeCaracas     time.Time
+)
 
 func init() {
 	var err error
-	locationCaracas, err = time.LoadLocation("America/Caracas")
-	if err != nil {
+	if locationCaracas, err = time.LoadLocation("America/Caracas"); err != nil {
 		panic(err)
 	}
-	locationBerlin, err = time.LoadLocation("Europe/Berlin")
-	if err != nil {
+
+	if locationBerlin, err = time.LoadLocation("Europe/Berlin"); err != nil {
 		panic(err)
 	}
+
 	timeCaracas = time.Date(2016, 1, 1, 12, 10, 0, 0, locationCaracas)
 }
 
@@ -41,39 +42,25 @@ func TestBeginningOf(t *testing.T) {
 	assert(New(n).BeginningOfMinute(), "2013-11-18 17:51:00", "BeginningOfMinute")
 
 	WeekStartDay = time.Monday
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-18 00:00:00" {
-		t.Errorf("BeginningOfWeek, FirstDayMonday")
-	}
+	assert(New(n).BeginningOfWeek(), "2013-11-18 00:00:00", "BeginningOfWeek, FirstDayMonday")
 
 	WeekStartDay = time.Tuesday
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-12 00:00:00" {
-		t.Errorf("BeginningOfWeek, FirstDayTuesday")
-	}
+	assert(New(n).BeginningOfWeek(), "2013-11-12 00:00:00", "BeginningOfWeek, FirstDayTuesday")
 
 	WeekStartDay = time.Wednesday
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-13 00:00:00" {
-		t.Errorf("BeginningOfWeek, FirstDayWednesday")
-	}
+	assert(New(n).BeginningOfWeek(), "2013-11-13 00:00:00", "BeginningOfWeek, FirstDayWednesday")
 
 	WeekStartDay = time.Thursday
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-14 00:00:00" {
-		t.Errorf("BeginningOfWeek, FirstDayThursday")
-	}
+	assert(New(n).BeginningOfWeek(), "2013-11-14 00:00:00", "BeginningOfWeek, FirstDayThursday")
 
 	WeekStartDay = time.Friday
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-15 00:00:00" {
-		t.Errorf("BeginningOfWeek, FirstDayFriday")
-	}
+	assert(New(n).BeginningOfWeek(), "2013-11-15 00:00:00", "BeginningOfWeek, FirstDayFriday")
 
 	WeekStartDay = time.Saturday
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-16 00:00:00" {
-		t.Errorf("BeginningOfWeek, FirstDaySaturday")
-	}
+	assert(New(n).BeginningOfWeek(), "2013-11-16 00:00:00", "BeginningOfWeek, FirstDaySaturday")
 
 	WeekStartDay = time.Sunday
-	if New(n).BeginningOfWeek().Format(format) != "2013-11-17 00:00:00" {
-		t.Errorf("BeginningOfWeek, FirstDaySunday")
-	}
+	assert(New(n).BeginningOfWeek(), "2013-11-17 00:00:00", "BeginningOfWeek, FirstDaySunday")
 
 	assert(New(n).BeginningOfHour(), "2013-11-18 17:00:00", "BeginningOfHour")
 
@@ -150,40 +137,23 @@ func TestEndOf(t *testing.T) {
 	dstEndOfDay := time.Date(2017, 10, 29, 1, 0, 0, 0, locationBerlin)
 	assert(New(dstEndOfDay).EndOfDay(), "2017-10-29 23:59:59.999999999", "EndOfDay DST")
 
-	WeekStartDay = time.Monday
-	if New(n).EndOfWeek().Format(format) != "2013-11-24 23:59:59.999999999" {
-		t.Errorf("EndOfWeek, FirstDayMonday")
-	}
-
 	WeekStartDay = time.Tuesday
-	if New(n).EndOfWeek().Format(format) != "2013-11-18 23:59:59.999999999" {
-		t.Errorf("EndOfWeek, FirstDayTuesday")
-	}
+	assert(New(n).EndOfWeek(), "2013-11-18 23:59:59.999999999", "EndOfWeek, FirstDayTuesday")
 
 	WeekStartDay = time.Wednesday
-	if New(n).EndOfWeek().Format(format) != "2013-11-19 23:59:59.999999999" {
-		t.Errorf("EndOfWeek, FirstDayWednesday")
-	}
+	assert(New(n).EndOfWeek(), "2013-11-19 23:59:59.999999999", "EndOfWeek, FirstDayWednesday")
 
 	WeekStartDay = time.Thursday
-	if New(n).EndOfWeek().Format(format) != "2013-11-20 23:59:59.999999999" {
-		t.Errorf("EndOfWeek, FirstDayThursday")
-	}
+	assert(New(n).EndOfWeek(), "2013-11-20 23:59:59.999999999", "EndOfWeek, FirstDayThursday")
 
 	WeekStartDay = time.Friday
-	if New(n).EndOfWeek().Format(format) != "2013-11-21 23:59:59.999999999" {
-		t.Errorf("EndOfWeek, FirstDayFriday")
-	}
+	assert(New(n).EndOfWeek(), "2013-11-21 23:59:59.999999999", "EndOfWeek, FirstDayFriday")
 
 	WeekStartDay = time.Saturday
-	if New(n).EndOfWeek().Format(format) != "2013-11-22 23:59:59.999999999" {
-		t.Errorf("EndOfWeek, FirstDaySaturday")
-	}
+	assert(New(n).EndOfWeek(), "2013-11-22 23:59:59.999999999", "EndOfWeek, FirstDaySaturday")
 
 	WeekStartDay = time.Sunday
-	if New(n).EndOfWeek().Format(format) != "2013-11-23 23:59:59.999999999" {
-		t.Errorf("EndOfWeek, FirstDaySunday")
-	}
+	assert(New(n).EndOfWeek(), "2013-11-23 23:59:59.999999999", "EndOfWeek, FirstDaySunday")
 
 	WeekStartDay = time.Monday
 	assert(New(n).EndOfWeek(), "2013-11-24 23:59:59.999999999", "EndOfWeek, FirstDayMonday")
@@ -260,17 +230,13 @@ func TestParse(t *testing.T) {
 
 	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.UTC)
 
-	assert(New(n).MustParse("00:00:00"), "2013-11-18 00:00:00", "Parse 00:00:00")
+	assert(New(n).MustParse("2002"), "2002-01-01 00:00:00", "Parse 2002")
 
-	assert(New(n).MustParse("2017"), "2017-01-01 00:00:00", "Parse 2017")
+	assert(New(n).MustParse("2002-10"), "2002-10-01 00:00:00", "Parse 2002-10")
 
-	assert(New(n).MustParse("2017-09"), "2017-09-01 00:00:00", "Parse 2017-09")
+	assert(New(n).MustParse("2002-10-12"), "2002-10-12 00:00:00", "Parse 2002-10-12")
 
-	assert(New(n).MustParse("10-12"), "2013-10-12 00:00:00", "Parse 10-12")
-
-	assert(New(n).MustParse("2002-10-12 00:14:56"), "2002-10-12 00:14:56", "Parse 2002-10-12 00:14:56")
-
-	assert(New(n).MustParse("2013-12-19 23:28:09.999999999 +0800 CST"), "2013-12-19 23:28:09", "Parse two strings 2013-12-19 23:28:09.999999999 +0800 CST")
+	assert(New(n).MustParse("2002-10-12 22"), "2002-10-12 22:00:00", "Parse 2002-10-12 22")
 
 	assert(New(n).MustParse("2002-10-12 22:14"), "2002-10-12 22:14:00", "Parse 2002-10-12 22:14")
 
@@ -280,13 +246,19 @@ func TestParse(t *testing.T) {
 
 	assert(New(n).MustParse("2002-10-12 22:14:56"), "2002-10-12 22:14:56", "Parse 2002-10-12 22:14:56")
 
-	assert(New(n).MustParse("2002-10-12"), "2002-10-12 00:00:00", "Parse 2002-10-12")
+	assert(New(n).MustParse("2002-10-12 00:14:56"), "2002-10-12 00:14:56", "Parse 2002-10-12 00:14:56")
+
+	assert(New(n).MustParse("2013-12-19 23:28:09.999999999 +0800 CST"), "2013-12-19 23:28:09", "Parse two strings 2013-12-19 23:28:09.999999999 +0800 CST")
+
+	assert(New(n).MustParse("10-12"), "2013-10-12 00:00:00", "Parse 10-12")
 
 	assert(New(n).MustParse("18"), "2013-11-18 18:00:00", "Parse 18 as hour")
 
 	assert(New(n).MustParse("18:20"), "2013-11-18 18:20:00", "Parse 18:20")
 
 	assert(New(n).MustParse("00:01"), "2013-11-18 00:01:00", "Parse 00:01")
+
+	assert(New(n).MustParse("00:00:00"), "2013-11-18 00:00:00", "Parse 00:00:00")
 
 	assert(New(n).MustParse("18:20:39"), "2013-11-18 18:20:39", "Parse 18:20:39")
 
