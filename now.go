@@ -22,11 +22,15 @@ func (now *Now) BeginningOfDay() time.Time {
 func (now *Now) BeginningOfWeek() time.Time {
 	t := now.BeginningOfDay()
 	weekday := int(t.Weekday())
-	if FirstDayMonday {
-		if weekday == 0 {
-			weekday = 7
+
+	if WeekStartDay != time.Sunday {
+		weekStartDayInt := int(WeekStartDay)
+
+		if weekday < weekStartDayInt {
+			weekday = weekday + 7 - weekStartDayInt
+		} else {
+			weekday = weekday - weekStartDayInt
 		}
-		weekday = weekday - 1
 	}
 
 	d := time.Duration(-weekday) * 24 * time.Hour
