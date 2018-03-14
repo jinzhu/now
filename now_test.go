@@ -260,6 +260,8 @@ func TestParse(t *testing.T) {
 
 	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.UTC)
 
+	assert(New(n).MustParse("00:00:00"), "2013-11-18 00:00:00", "Parse 00:00:00")
+
 	assert(New(n).MustParse("2017"), "2017-01-01 00:00:00", "Parse 2017")
 
 	assert(New(n).MustParse("2017-09"), "2017-09-01 00:00:00", "Parse 2017-09")
