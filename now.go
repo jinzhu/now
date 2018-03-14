@@ -131,6 +131,8 @@ func parseWithFormat(str string) (t time.Time, err error) {
 	return
 }
 
+var timeOnlyRegexp = regexp.MustCompile(`^\s*\d{1,2}(:\d{1,2})*\s*$`) // match 15:04:05, 15
+
 // Parse parse string to time
 func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 	var setCurrentTime bool
@@ -139,7 +141,7 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 	currentLocation := now.Location()
 
 	for _, str := range strs {
-		onlyTime := regexp.MustCompile(`^\s*\d+(:\d+)*\s*$`).MatchString(str) // match 15:04:05, 15
+		onlyTime := timeOnlyRegexp.MatchString(str) // match 15:04:05, 15
 
 		t, err = parseWithFormat(str)
 		location := t.Location()
