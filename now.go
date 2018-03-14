@@ -162,7 +162,7 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 				}
 
 				// Fill up missed information with current time
-				if v == 0 {
+				if v == 0 && i != 2 {
 					if setCurrentTime {
 						parseTime[i] = currentTime[i]
 					}
