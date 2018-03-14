@@ -131,7 +131,8 @@ func parseWithFormat(str string) (t time.Time, err error) {
 	return
 }
 
-var timeOnlyRegexp = regexp.MustCompile(`^\s*\d{1,2}(:\d{1,2})*\s*$`) // match 15:04:05, 15
+var hasTimeRegexp = regexp.MustCompile(`(\s+|^\s*)\d{1,2}(:\d{1,2})*\s*$`) // match 15:04:05, 15, 2017-01-01 15:04
+var onlyTimeRegexp = regexp.MustCompile(`^\s*\d{1,2}(:\d{1,2})*\s*$`)      // match 15:04:05, 15
 
 // Parse parse string to time
 func (now *Now) Parse(strs ...string) (t time.Time, err error) {
@@ -140,8 +141,10 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 	currentTime := []int{now.Second(), now.Minute(), now.Hour(), now.Day(), int(now.Month()), now.Year()}
 	currentLocation := now.Location()
 
+	onlyTimeInStr := true
 	for _, str := range strs {
-		onlyTime := timeOnlyRegexp.MatchString(str) // match 15:04:05, 15
+		hasTimeInStr := hasTimeRegexp.MatchString(str) // match 15:04:05, 15
+		onlyTimeInStr = hasTimeInStr && onlyTimeInStr && onlyTimeRegexp.MatchString(str)
 
 		t, err = parseWithFormat(str)
 		location := t.Location()
@@ -151,11 +154,10 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 
 		if err == nil {
 			parseTime = []int{t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
-			onlyTime = onlyTime && (parseTime[3] == 1) && (parseTime[4] == 1)
 
 			for i, v := range parseTime {
-				// Don't reset hour, minute, second if it is a time only string
-				if onlyTime && i <= 2 {
+				// Don't reset hour, minute, second if current time str including time
+				if hasTimeInStr && i <= 2 {
 					continue
 				}
 
@@ -168,8 +170,8 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 					setCurrentTime = true
 				}
 
-				// Default day and month is 1, fill up it if missing it
-				if onlyTime {
+				// if current time only includes time, default day and month is 1, fill up it
+				if onlyTimeInStr {
 					if i == 3 || i == 4 {
 						parseTime[i] = currentTime[i]
 						continue
