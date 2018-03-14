@@ -2,6 +2,8 @@
 
 Now is a time toolkit for golang
 
+[![wercker status](https://app.wercker.com/status/a350da4eae6cb28a35687ba41afb565a/s/master "wercker status")](https://app.wercker.com/project/byKey/a350da4eae6cb28a35687ba41afb565a)
+
 #### Why the project named `Now`?
 
 ```go
@@ -91,11 +93,9 @@ now.TimeFormats = append(now.TimeFormats, "02 Jan 2006 15:04")
 
 Please send me pull requests if you want a format to be supported officially
 
+## Contributing
 
-# Supporting the project
-
-[![http://patreon.com/jinzhu](http://patreon_public_assets.s3.amazonaws.com/sized/becomeAPatronBanner.png)](http://patreon.com/jinzhu)
-
+You can help to make the project better, check out [http://gorm.io/contribute.html](http://gorm.io/contribute.html) for things you can do.
 
 # Author
 
