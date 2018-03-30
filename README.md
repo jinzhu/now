@@ -64,6 +64,23 @@ now.New(t).Sunday()       // 2013-11-24 00:00:00 Sun (Beginning Of Today if toda
 now.New(t).EndOfSunday()  // 2013-11-24 23:59:59.999999999 Sun (End of Today if today is Sunday)
 ```
 
+### MonthsAgo/MonthsSince
+
+MonthsAgo normalizes its result in the different way that AddDate, so, for example,
+calling one month ago from March 31 yields Feburary 28, the normalized from for Feburary 31.
+MonthsSince also.
+
+```go
+t1 := time.Date(2013, 03, 31, 17, 51, 49, 123456789, time.Now().Location())
+now.New(t1).MonthsAgo(1) // 2013-02-28 17:51:49.123456789
+
+// when leap year
+now.New(t1).MonthsAgo(13) // 2012-02-29 17:51:49.123456789
+
+t2 := time.Date(2013, 01, 31, 17, 51, 49, 123456789, time.Now().Location())
+now.New(t2).MonthsSince(1) // 2013-02-28 17:51:49.123456789
+```
+
 ### Parse String to Time
 
 ```go
