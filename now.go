@@ -202,3 +202,21 @@ func (now *Now) Between(begin, end string) bool {
 	endTime := now.MustParse(end)
 	return now.After(beginTime) && now.Before(endTime)
 }
+
+// MonthsAgo returns time as n month ago
+func (now *Now) MonthsAgo(n int) time.Time {
+	t := now.AddDate(0, -n, 0)
+	if int(now.Day()) == int(t.Day()) {
+		return t
+	}
+	return t.AddDate(0, 0, -int(t.Day()))
+}
+
+// MonthsSince returns time as n month later
+func (now *Now) MonthsSince(n int) time.Time {
+	t := now.AddDate(0, n, 0)
+	if int(now.Day()) == int(t.Day()) {
+		return t
+	}
+	return t.AddDate(0, 0, -int(t.Day()))
+}

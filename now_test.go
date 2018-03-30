@@ -332,3 +332,19 @@ func Example() {
 	Sunday()      // 2013-11-24 00:00:00 Sun
 	EndOfSunday() // 2013-11-24 23:59:59.999999999 Sun
 }
+
+func TestMonthsAgo(t *testing.T) {
+	assert := assertT(t)
+	n := time.Date(2013, 3, 30, 17, 51, 49, 123456789, time.UTC)
+	assert(New(n).MonthsAgo(1), "2013-02-28 17:51:49.123456789", "1 month ago")
+	assert(New(n).MonthsAgo(3), "2012-12-30 17:51:49.123456789", "3 months ago")
+	assert(New(n).MonthsAgo(13), "2012-02-29 17:51:49.123456789", "13 months ago with leap year")
+}
+
+func TestMonthsSince(t *testing.T) {
+	assert := assertT(t)
+	n := time.Date(2013, 1, 31, 17, 51, 49, 123456789, time.UTC)
+	assert(New(n).MonthsSince(1), "2013-02-28 17:51:49.123456789", "1 month later")
+	assert(New(n).MonthsSince(3), "2013-04-30 17:51:49.123456789", "3 months later")
+	assert(New(n).MonthsSince(37), "2016-02-29 17:51:49.123456789", "37 months later with leap year")
+}
