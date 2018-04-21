@@ -248,7 +248,7 @@ func TestParse(t *testing.T) {
 
 	assert(New(n).MustParse("2002-10-12 00:14:56"), "2002-10-12 00:14:56", "Parse 2002-10-12 00:14:56")
 
-	assert(New(n).MustParse("2013-12-19 23:28:09.999999999 +0800 CST"), "2013-12-19 23:28:09", "Parse two strings 2013-12-19 23:28:09.999999999 +0800 CST")
+	assert(New(n).MustParse("2013-12-19 23:28:09.999999999 +0800 CST"), "2013-12-19 23:28:09.999999999", "Parse two strings 2013-12-19 23:28:09.999999999 +0800 CST")
 
 	assert(New(n).MustParse("10-12"), "2013-10-12 00:00:00", "Parse 10-12")
 
@@ -286,6 +286,16 @@ func TestParse(t *testing.T) {
 	if MustParseInLocation(time.UTC, "2018-02-13T15:17:06.0").String() != "2018-02-13 15:17:06 +0000 UTC" {
 		t.Errorf("ParseInLocation 2018-02-13T15:17:06.0")
 	}
+
+	TimeFormats = append(TimeFormats, "2006-01-02 15:04:05.000")
+	assert(New(n).MustParse("2018-04-20 21:22:23.473"), "2018-04-20 21:22:23.473", "Parse 2018/04/20 21:22:23.473")
+
+	TimeFormats = append(TimeFormats, "15:04:05.000")
+	assert(New(n).MustParse("13:00:01.365"), "2013-11-18 13:00:01.365", "Parse 13:00:01.365")
+
+	TimeFormats = append(TimeFormats, "2006-01-02 15:04:05.000000")
+	assert(New(n).MustParse("2010-01-01 07:24:23.131384"), "2010-01-01 07:24:23.131384", "Parse 2010-01-01 07:24:23.131384")
+	assert(New(n).MustParse("00:00:00.182736"), "2013-11-18 00:00:00.182736", "Parse 00:00:00.182736")
 }
 
 func TestBetween(t *testing.T) {
