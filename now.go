@@ -131,15 +131,15 @@ func parseWithFormat(str string) (t time.Time, err error) {
 	return
 }
 
-var hasTimeRegexp = regexp.MustCompile(`(\s+|^\s*)\d{1,2}(:\d{1,2})*\s*$`) // match 15:04:05, 15, 2017-01-01 15:04
-var onlyTimeRegexp = regexp.MustCompile(`^\s*\d{1,2}(:\d{1,2})*\s*$`)      // match 15:04:05, 15
+var hasTimeRegexp = regexp.MustCompile(`(\s+|^\s*)\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))\s*$`) // match 15:04:05, 15:04:05.000, 15:04:05.000000 15, 2017-01-01 15:04, etc
+var onlyTimeRegexp = regexp.MustCompile(`^\s*\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))\s*$`)      // match 15:04:05, 15, 15:04:05.000, 15:04:05.000000, etc
 
 // Parse parse string to time
 func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 	var (
 		setCurrentTime  bool
 		parseTime       []int
-		currentTime     = []int{now.Second(), now.Minute(), now.Hour(), now.Day(), int(now.Month()), now.Year()}
+		currentTime     = []int{now.Nanosecond(), now.Second(), now.Minute(), now.Hour(), now.Day(), int(now.Month()), now.Year()}
 		currentLocation = now.Location()
 		onlyTimeInStr   = true
 	)
@@ -147,18 +147,17 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 	for _, str := range strs {
 		hasTimeInStr := hasTimeRegexp.MatchString(str) // match 15:04:05, 15
 		onlyTimeInStr = hasTimeInStr && onlyTimeInStr && onlyTimeRegexp.MatchString(str)
-
 		if t, err = parseWithFormat(str); err == nil {
 			location := t.Location()
 			if location.String() == "UTC" {
 				location = currentLocation
 			}
 
-			parseTime = []int{t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
+			parseTime = []int{t.Nanosecond(), t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
 
 			for i, v := range parseTime {
 				// Don't reset hour, minute, second if current time str including time
-				if hasTimeInStr && i <= 2 {
+				if hasTimeInStr && i <= 3 {
 					continue
 				}
 
@@ -173,15 +172,15 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 
 				// if current time only includes time, should change day, month to current time
 				if onlyTimeInStr {
-					if i == 3 || i == 4 {
+					if i == 4 || i == 5 {
 						parseTime[i] = currentTime[i]
 						continue
 					}
 				}
 			}
 
-			t = time.Date(parseTime[5], time.Month(parseTime[4]), parseTime[3], parseTime[2], parseTime[1], parseTime[0], 0, location)
-			currentTime = []int{t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
+			t = time.Date(parseTime[6], time.Month(parseTime[5]), parseTime[4], parseTime[3], parseTime[2], parseTime[1], parseTime[0], location)
+			currentTime = []int{t.Nanosecond(), t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
 		}
 	}
 	return
