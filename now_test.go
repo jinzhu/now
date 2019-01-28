@@ -111,9 +111,13 @@ func TestBeginningOf(t *testing.T) {
 	dstBeginningOfQuarter := time.Date(2017, 11, 24, 0, 0, 0, 0, locationBerlin)
 	assert(New(dstBeginningOfQuarter).BeginningOfQuarter(), "2017-10-01 00:00:00", "BeginningOfQuarter DST")
 
+	assert(New(dstBeginningOfQuarter).BeginningOfHalf(), "2017-07-01 00:00:00", "BeginningOfHalf DST")
+
 	assert(New(n.AddDate(0, -1, 0)).BeginningOfQuarter(), "2013-10-01 00:00:00", "BeginningOfQuarter")
 
 	assert(New(n.AddDate(0, 1, 0)).BeginningOfQuarter(), "2013-10-01 00:00:00", "BeginningOfQuarter")
+
+	assert(New(n.AddDate(0, 1, 0)).BeginningOfHalf(), "2013-07-01 00:00:00", "BeginningOfHalf")
 
 	// DST
 	assert(New(dstBeginningOfQuarter).BeginningOfYear(), "2017-01-01 00:00:00", "BeginningOfYear DST")
@@ -177,9 +181,13 @@ func TestEndOf(t *testing.T) {
 
 	assert(New(n).EndOfQuarter(), "2013-12-31 23:59:59.999999999", "EndOfQuarter")
 
+	assert(New(n).EndOfHalf(), "2013-12-31 23:59:59.999999999", "EndOfHalf")
+
 	assert(New(n.AddDate(0, -1, 0)).EndOfQuarter(), "2013-12-31 23:59:59.999999999", "EndOfQuarter")
 
 	assert(New(n.AddDate(0, 1, 0)).EndOfQuarter(), "2013-12-31 23:59:59.999999999", "EndOfQuarter")
+
+	assert(New(n.AddDate(0, 1, 0)).EndOfHalf(), "2013-12-31 23:59:59.999999999", "EndOfHalf")
 
 	assert(New(n).EndOfYear(), "2013-12-31 23:59:59.999999999", "EndOfYear")
 

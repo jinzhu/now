@@ -53,6 +53,13 @@ func (now *Now) BeginningOfQuarter() time.Time {
 	return month.AddDate(0, -offset, 0)
 }
 
+// BeginningOfHalf beginning of half year
+func (now *Now) BeginningOfHalf() time.Time {
+	month := now.BeginningOfMonth()
+	offset := (int(month.Month()) - 1) % 6
+	return month.AddDate(0, -offset, 0)
+}
+
 // BeginningOfYear BeginningOfYear beginning of year
 func (now *Now) BeginningOfYear() time.Time {
 	y, _, _ := now.Date()
@@ -88,6 +95,11 @@ func (now *Now) EndOfMonth() time.Time {
 // EndOfQuarter end of quarter
 func (now *Now) EndOfQuarter() time.Time {
 	return now.BeginningOfQuarter().AddDate(0, 3, 0).Add(-time.Nanosecond)
+}
+
+// EndOfHalf end of half year
+func (now *Now) EndOfHalf() time.Time {
+	return now.BeginningOfHalf().AddDate(0, 6, 0).Add(-time.Nanosecond)
 }
 
 // EndOfYear end of year
