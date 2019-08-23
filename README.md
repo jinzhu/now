@@ -3,6 +3,7 @@
 Now is a time toolkit for golang
 
 [![wercker status](https://app.wercker.com/status/a350da4eae6cb28a35687ba41afb565a/s/master "wercker status")](https://app.wercker.com/project/byKey/a350da4eae6cb28a35687ba41afb565a)
+[![fuzzit status](https://app.fuzzit.dev/badge?org_id=jinzhu)](https://app.fuzzit.dev/orgs/jinzhu/dashboard)
 
 ## Install
 
