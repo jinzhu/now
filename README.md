@@ -49,6 +49,24 @@ t := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.Now().Location())
 now.New(t).EndOfMonth()   // 2013-02-28 23:59:59.999999999 Thu
 ```
 
+Calculating time based on configuration
+
+```go
+location, err := time.LoadLocation("Asia/Shanghai")
+
+myConfig := &now.Config{
+	WeekStartDay: time.Monday,
+	TimeLocation: location,
+	TimeFormats: []string{"2006-01-02 15:04:05"},
+}
+
+t := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.Now().Location()) // // 2013-11-18 17:51:49.123456789 Mon
+myConfig.New(t).BeginningOfWeek()         // 2013-11-18 00:00:00 Mon
+
+myConfig.Parse("2002-10-12 22:14:01")     // 2002-10-12 22:14:01
+myConfig.Parse("2002-10-12 22:14")        // returns error 'can't parse string as time: 2002-10-12 22:14'
+```
+
 ### Monday/Sunday
 
 Don't be bothered with the `WeekStartDay` setting, you can use `Monday`, `Sunday`

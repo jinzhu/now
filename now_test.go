@@ -317,6 +317,32 @@ func TestBetween(t *testing.T) {
 	}
 }
 
+func TestConfig(t *testing.T) {
+	assert := assertT(t)
+
+	location, err := time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		t.Errorf("load location for Asia/Shanghai should returns no error, but got %v", err)
+	}
+
+	myConfig := Config{
+		WeekStartDay: time.Monday,
+		TimeLocation: location,
+		TimeFormats:  []string{"2006-01-02 15:04:05"},
+	}
+
+	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.Now().Location()) // // 2013-11-18 17:51:49.123456789 Mon
+	assert(myConfig.New(n).BeginningOfWeek(), "2013-11-18 00:00:00", "BeginningOfWeek, FirstDayMonday")
+
+	if result, _ := myConfig.Parse("2018-02-13 15:17:06"); result.String() != "2018-02-13 15:17:06 +0800 CST" {
+		t.Errorf("ParseInLocation 2018-02-13T15:17:06.0, got %v", result)
+	}
+
+	if result := myConfig.MustParse("2018-02-13 15:17:06"); result.String() != "2018-02-13 15:17:06 +0800 CST" {
+		t.Errorf("ParseInLocation 2018-02-13T15:17:06.0, got %v", result)
+	}
+}
+
 func Example() {
 	time.Now() // 2013-11-18 17:51:49.123456789 Mon
 

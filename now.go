@@ -28,8 +28,8 @@ func (now *Now) BeginningOfWeek() time.Time {
 	t := now.BeginningOfDay()
 	weekday := int(t.Weekday())
 
-	if WeekStartDay != time.Sunday {
-		weekStartDayInt := int(WeekStartDay)
+	if now.WeekStartDay != time.Sunday {
+		weekStartDayInt := int(now.WeekStartDay)
 
 		if weekday < weekStartDayInt {
 			weekday = weekday + 7 - weekStartDayInt
@@ -132,8 +132,8 @@ func (now *Now) EndOfSunday() time.Time {
 	return New(now.Sunday()).EndOfDay()
 }
 
-func parseWithFormat(str string) (t time.Time, err error) {
-	for _, format := range TimeFormats {
+func (now *Now) parseWithFormat(str string) (t time.Time, err error) {
+	for _, format := range now.TimeFormats {
 		t, err = time.Parse(format, str)
 		if err == nil {
 			return
@@ -159,7 +159,7 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 	for _, str := range strs {
 		hasTimeInStr := hasTimeRegexp.MatchString(str) // match 15:04:05, 15
 		onlyTimeInStr = hasTimeInStr && onlyTimeInStr && onlyTimeRegexp.MatchString(str)
-		if t, err = parseWithFormat(str); err == nil {
+		if t, err = now.parseWithFormat(str); err == nil {
 			location := t.Location()
 			if location.String() == "UTC" {
 				location = currentLocation
