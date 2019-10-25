@@ -132,9 +132,10 @@ func (now *Now) EndOfSunday() time.Time {
 	return New(now.Sunday()).EndOfDay()
 }
 
-func (now *Now) parseWithFormat(str string) (t time.Time, err error) {
+func (now *Now) parseWithFormat(str string, location *time.Location) (t time.Time, err error) {
 	for _, format := range now.TimeFormats {
-		t, err = time.Parse(format, str)
+		t, err = time.ParseInLocation(format, str, location)
+
 		if err == nil {
 			return
 		}
@@ -159,11 +160,8 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 	for _, str := range strs {
 		hasTimeInStr := hasTimeRegexp.MatchString(str) // match 15:04:05, 15
 		onlyTimeInStr = hasTimeInStr && onlyTimeInStr && onlyTimeRegexp.MatchString(str)
-		if t, err = now.parseWithFormat(str); err == nil {
+		if t, err = now.parseWithFormat(str, currentLocation); err == nil {
 			location := t.Location()
-			if location.String() == "UTC" {
-				location = currentLocation
-			}
 
 			parseTime = []int{t.Nanosecond(), t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
 

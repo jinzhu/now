@@ -304,6 +304,11 @@ func TestParse(t *testing.T) {
 	TimeFormats = append(TimeFormats, "2006-01-02 15:04:05.000000")
 	assert(New(n).MustParse("2010-01-01 07:24:23.131384"), "2010-01-01 07:24:23.131384", "Parse 2010-01-01 07:24:23.131384")
 	assert(New(n).MustParse("00:00:00.182736"), "2013-11-18 00:00:00.182736", "Parse 00:00:00.182736")
+
+	n3 := MustParse("2017-12-11T10:25:49Z")
+	if n3.Location() != time.UTC {
+		t.Errorf("time location should be UTC, but got %v", n3.Location())
+	}
 }
 
 func TestBetween(t *testing.T) {
