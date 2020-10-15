@@ -152,10 +152,12 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 	var (
 		setCurrentTime  bool
 		parseTime       []int
-		currentTime     = []int{now.Nanosecond(), now.Second(), now.Minute(), now.Hour(), now.Day(), int(now.Month()), now.Year()}
 		currentLocation = now.Location()
 		onlyTimeInStr   = true
 	)
+	hour, min, sec := now.Clock()
+	year, month, day := now.Date()
+	currentTime := []int{now.Nanosecond(), sec, min, hour, day, int(month), year}
 
 	for _, str := range strs {
 		hasTimeInStr := hasTimeRegexp.MatchString(str) // match 15:04:05, 15
@@ -163,7 +165,9 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 		if t, err = now.parseWithFormat(str, currentLocation); err == nil {
 			location := t.Location()
 
-			parseTime = []int{t.Nanosecond(), t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
+			hour, min, sec = t.Clock()
+			year, month, day = t.Date()
+			parseTime = []int{t.Nanosecond(), sec, min, hour, day, int(month), year}
 
 			for i, v := range parseTime {
 				// Don't reset hour, minute, second if current time str including time
@@ -190,7 +194,9 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 			}
 
 			t = time.Date(parseTime[6], time.Month(parseTime[5]), parseTime[4], parseTime[3], parseTime[2], parseTime[1], parseTime[0], location)
-			currentTime = []int{t.Nanosecond(), t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
+			hour, min, sec = t.Clock()
+			year, month, day = t.Date()
+			currentTime = []int{t.Nanosecond(), sec, min, hour, day, int(month), year}
 		}
 	}
 	return
