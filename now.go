@@ -132,6 +132,11 @@ func (now *Now) EndOfSunday() time.Time {
 	return New(now.Sunday()).EndOfDay()
 }
 
+// Quarter returns the yearly quarter
+func (now *Now) Quarter() uint {
+	return (uint(now.Month())-1)/3 + 1
+}
+
 func (now *Now) parseWithFormat(str string, location *time.Location) (t time.Time, err error) {
 	for _, format := range now.TimeFormats {
 		t, err = time.ParseInLocation(format, str, location)
@@ -154,7 +159,7 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 		parseTime       []int
 		currentLocation = now.Location()
 		onlyTimeInStr   = true
-		currentTime  = formatTimeToList(now.Time)
+		currentTime     = formatTimeToList(now.Time)
 	)
 
 	for _, str := range strs {

@@ -348,6 +348,25 @@ func TestConfig(t *testing.T) {
 	}
 }
 
+func TestQuarter(t *testing.T) {
+	type test struct {
+		givenDate       time.Time
+		expectedQuarter uint
+	}
+
+	tests := []test{
+		{time.Date(2021, 6, 18, 0, 0, 0, 0, time.UTC), 2},
+		{time.Date(2021, 7, 18, 0, 0, 0, 0, time.UTC), 3},
+	}
+
+	for _, tc := range tests {
+		got := With(tc.givenDate).Quarter()
+		if got != tc.expectedQuarter {
+			t.Fatalf("Quarter %d expected, got %d", tc.expectedQuarter, got)
+		}
+	}
+}
+
 func Example() {
 	time.Now() // 2013-11-18 17:51:49.123456789 Mon
 

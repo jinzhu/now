@@ -168,6 +168,11 @@ func EndOfSunday() time.Time {
 	return With(time.Now()).EndOfSunday()
 }
 
+// Quarter returns the yearly quarter
+func Quarter() uint {
+	return With(time.Now()).Quarter()
+}
+
 // Parse parse string to time
 func Parse(strs ...string) (time.Time, error) {
 	return With(time.Now()).Parse(strs...)
