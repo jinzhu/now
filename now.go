@@ -108,6 +108,7 @@ func (now *Now) EndOfYear() time.Time {
 }
 
 // Monday monday
+/*
 func (now *Now) Monday() time.Time {
 	t := now.BeginningOfDay()
 	weekday := int(t.Weekday())
@@ -116,15 +117,42 @@ func (now *Now) Monday() time.Time {
 	}
 	return t.AddDate(0, 0, -weekday+1)
 }
+*/
 
-// Sunday sunday
-func (now *Now) Sunday() time.Time {
-	t := now.BeginningOfDay()
-	weekday := int(t.Weekday())
-	if weekday == 0 {
-		return t
+func (now *Now) Monday(strs ...string) time.Time {
+	var parseTime time.Time
+	var err error
+	if len(strs) > 0 {
+		parseTime, err = now.Parse(strs...)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		parseTime = now.BeginningOfDay()
 	}
-	return t.AddDate(0, 0, (7 - weekday))
+	weekday := int(parseTime.Weekday())
+	if weekday == 0 {
+		weekday = 7
+	}
+	return parseTime.AddDate(0, 0, -weekday+1)
+}
+
+func (now *Now) Sunday(strs ...string) time.Time {
+	var parseTime time.Time
+	var err error
+	if len(strs) > 0 {
+		parseTime, err = now.Parse(strs...)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		parseTime = now.BeginningOfDay()
+	}
+	weekday := int(parseTime.Weekday())
+	if weekday == 0 {
+		weekday = 7
+	}
+	return parseTime.AddDate(0, 0, (7 - weekday))
 }
 
 // EndOfSunday end of sunday

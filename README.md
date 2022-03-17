@@ -72,13 +72,17 @@ Don't be bothered with the `WeekStartDay` setting, you can use `Monday`, `Sunday
 
 ```go
 now.Monday()              // 2013-11-18 00:00:00 Mon
+now.Monday("17:44")       // 2013-11-18 17:44:00 Mon
 now.Sunday()              // 2013-11-24 00:00:00 Sun (Next Sunday)
+now.Sunday("18:19:24")    // 2013-11-24 18:19:24 Sun (Next Sunday)
 now.EndOfSunday()         // 2013-11-24 23:59:59.999999999 Sun (End of next Sunday)
 
 t := time.Date(2013, 11, 24, 17, 51, 49, 123456789, time.Now().Location()) // 2013-11-24 17:51:49.123456789 Sun
-now.With(t).Monday()       // 2013-11-18 00:00:00 Sun (Last Monday if today is Sunday)
-now.With(t).Sunday()       // 2013-11-24 00:00:00 Sun (Beginning Of Today if today is Sunday)
-now.With(t).EndOfSunday()  // 2013-11-24 23:59:59.999999999 Sun (End of Today if today is Sunday)
+now.With(t).Monday()              // 2013-11-18 00:00:00 Mon (Last Monday if today is Sunday)
+now.With(t).Monday("17:44")       // 2013-11-18 17:44:00 Mon (Last Monday if today is Sunday)
+now.With(t).Sunday()              // 2013-11-24 00:00:00 Sun (Beginning Of Today if today is Sunday)
+now.With(t).Sunday("18:19:24")    // 2013-11-24 18:19:24 Sun (Beginning Of Today if today is Sunday)
+now.With(t).EndOfSunday()         // 2013-11-24 23:59:59.999999999 Sun (End of Today if today is Sunday)
 ```
 
 ### Parse String to Time

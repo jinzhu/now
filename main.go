@@ -154,13 +154,14 @@ func EndOfYear() time.Time {
 }
 
 // Monday monday
-func Monday() time.Time {
-	return With(time.Now()).Monday()
+
+func Monday(strs ...string) time.Time {
+	return With(time.Now()).Monday(strs...)
 }
 
 // Sunday sunday
-func Sunday() time.Time {
-	return With(time.Now()).Sunday()
+func Sunday(strs ...string) time.Time {
+	return With(time.Now()).Sunday(strs...)
 }
 
 // EndOfSunday end of sunday

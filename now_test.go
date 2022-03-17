@@ -213,7 +213,15 @@ func TestMondayAndSunday(t *testing.T) {
 
 	assert(With(nDst).Monday(), "2017-10-23 00:00:00", "Monday DST")
 
+	assert(With(n).Monday("17:51:49"), "2013-11-18 17:51:49", "Monday")
+
+	assert(With(n).Monday("17:51"), "2013-11-18 17:51:00", "Monday")
+
 	assert(With(n).Sunday(), "2013-11-24 00:00:00", "Sunday")
+
+	assert(With(n).Sunday("18:19:20"), "2013-11-24 18:19:20", "Sunday")
+
+	assert(With(n).Sunday("18:19"), "2013-11-24 18:19:00", "Sunday")
 
 	assert(With(n2).Sunday(), "2013-11-24 00:00:00", "Sunday")
 
@@ -433,7 +441,9 @@ func Example() {
 	t := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.UTC)
 	With(t).EndOfMonth() // 2013-02-28 23:59:59.999999999 Thu
 
-	Monday()      // 2013-11-18 00:00:00 Mon
-	Sunday()      // 2013-11-24 00:00:00 Sun
-	EndOfSunday() // 2013-11-24 23:59:59.999999999 Sun
+	Monday()        // 2013-11-18 00:00:00 Mon
+	Monday("17:44") // 2013-11-18 17:44:00 Mon
+	Sunday()        // 2013-11-24 00:00:00 Sun
+	Sunday("17:44") // 2013-11-24 17:44:00 Sun
+	EndOfSunday()   // 2013-11-24 23:59:59.999999999 Sun
 }
