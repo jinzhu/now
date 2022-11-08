@@ -36,12 +36,12 @@ type Config struct {
 // DefaultConfig default config
 var DefaultConfig *Config
 
-// New initialize Now based on configuration
+// With initializes Now based on configuration
 func (config *Config) With(t time.Time) *Now {
 	return &Now{Time: t, Config: config}
 }
 
-// Parse parse string to time based on configuration
+// Parse parses string to time based on configuration
 func (config *Config) Parse(strs ...string) (time.Time, error) {
 	if config.TimeLocation == nil {
 		return config.With(time.Now()).Parse(strs...)
@@ -153,13 +153,12 @@ func EndOfYear() time.Time {
 	return With(time.Now()).EndOfYear()
 }
 
-// Monday monday
-
+// Monday returns the time.Time value of Monday
 func Monday(strs ...string) time.Time {
 	return With(time.Now()).Monday(strs...)
 }
 
-// Sunday sunday
+// Sunday returns the time.Time value of Sunday
 func Sunday(strs ...string) time.Time {
 	return With(time.Now()).Sunday(strs...)
 }
