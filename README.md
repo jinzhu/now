@@ -2,9 +2,7 @@
 
 Now is a time toolkit for golang
 
-[![go report card](https://goreportcard.com/badge/github.com/jinzhu/now "go report card")](https://goreportcard.com/report/github.com/jinzhu/now)
-[![test status](https://github.com/jinzhu/now/workflows/tests/badge.svg?branch=master "test status")](https://github.com/jinzhu/now/actions)
-[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![go report card](https://goreportcard.com/badge/github.com/jinzhu/now "go report card")](https://goreportcard.com/report/github.com/jinzhu/now) [![test status](https://github.com/jinzhu/now/workflows/tests/badge.svg?branch=master "test status")](https://github.com/jinzhu/now/actions) [![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
 ## Install
 
@@ -120,6 +118,20 @@ now.TimeFormats = append(now.TimeFormats, "02 Jan 2006 15:04")
 
 Please send me pull requests if you want a format to be supported officially
 
+### Between
+
+```
+// Between check time between begin time and end time or not
+flag, err := now.Between("1970-01-01", "9999-12-31") // true, nil
+flag, err := now.Between("99:99", "99:99")           // false, Can't parse string as time: 99:99
+flag, err := now.Between("2022-12-31", "2022-01-01") // false, wrong order of parameters
+
+// MustBetween must check time between begin time and end time or not
+now.MustBetween("1970-01-01 00:00:00", "9999-12-31 23:59:59") // true
+now.MustBetween("99:99", "99:99")                             // panic: Can't parse string as time: 99:99
+now.MustBetween("2022-12-31 23:59:59", "2022-01-01 00:00:00") // panic: wrong order of parameters
+```
+
 ## Contributing
 
 You can help to make the project better, check out [http://gorm.io/contribute.html](http://gorm.io/contribute.html) for things you can do.
@@ -128,9 +140,9 @@ You can help to make the project better, check out [http://gorm.io/contribute.ht
 
 **jinzhu**
 
-* <http://github.com/jinzhu>
-* <wosmvp@gmail.com>
-* <http://twitter.com/zhangjinzhu>
+* [https://github.com/jinzhu](https://github.com/jinzhu)
+* [wosmvp@gmail.com](mailto:wosmvp@gmail.com)
+* [http://twitter.com/zhangjinzhu](http://twitter.com/zhangjinzhu)
 
 ## License
 

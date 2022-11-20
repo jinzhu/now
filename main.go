@@ -2,11 +2,11 @@
 //
 // More details README here: https://github.com/jinzhu/now
 //
-//  import "github.com/jinzhu/now"
+//	import "github.com/jinzhu/now"
 //
-//  now.BeginningOfMinute() // 2013-11-18 17:51:00 Mon
-//  now.BeginningOfDay()    // 2013-11-18 00:00:00 Mon
-//  now.EndOfDay()          // 2013-11-18 23:59:59.999999999 Mon
+//	now.BeginningOfMinute() // 2013-11-18 17:51:00 Mon
+//	now.BeginningOfDay()    // 2013-11-18 00:00:00 Mon
+//	now.EndOfDay()          // 2013-11-18 23:59:59.999999999 Mon
 package now
 
 import "time"
@@ -194,7 +194,12 @@ func MustParseInLocation(loc *time.Location, strs ...string) time.Time {
 	return With(time.Now().In(loc)).MustParse(strs...)
 }
 
-// Between check now between the begin, end time or not
-func Between(time1, time2 string) bool {
-	return With(time.Now()).Between(time1, time2)
+// Between check now between begin time and end time or not
+func Between(begin, end string) (bool, error) {
+	return With(time.Now()).Between(begin, end)
+}
+
+// MustBetween check now between begin time and end time or not
+func MustBetween(begin, end string) bool {
+	return With(time.Now()).MustBetween(begin, end)
 }
