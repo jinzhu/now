@@ -292,32 +292,32 @@ func TestParse(t *testing.T) {
 
 	assert(With(n).MustParse("2002-10-12T00:14:56+08:00"), "2002-10-12 00:14:56", "Parse 2002-10-12T00:14:56+08:00")
 	_, off := With(n).MustParse("2002-10-12T00:14:56+08:00").Zone()
-	if (off != 28800) {
+	if off != 28800 {
 		t.Errorf("Parse 2002-10-12T00:14:56+08:00 shouldn't lose time zone offset")
 	}
 	assert(With(n).MustParse("2002-10-12T00:00:56-07:00"), "2002-10-12 00:00:56", "Parse 2002-10-12T00:00:56-07:00")
 	_, off2 := With(n).MustParse("2002-10-12T00:00:56-07:00").Zone()
-	if (off2 != -25200){
+	if off2 != -25200 {
 		t.Errorf("Parse 2002-10-12T00:00:56-07:00 shouldn't lose time zone offset")
 	}
 	assert(With(n).MustParse("2002-10-12T00:01:12.333+0200"), "2002-10-12 00:01:12.333", "Parse 2002-10-12T00:01:12.333+0200")
 	_, off3 := With(n).MustParse("2002-10-12T00:01:12.333+0200").Zone()
-	if (off3 != 7200){
+	if off3 != 7200 {
 		t.Errorf("Parse 2002-10-12T00:01:12.333+0200 shouldn't lose time zone offset")
 	}
 	assert(With(n).MustParse("2002-10-12T00:00:56.999999999+08:00"), "2002-10-12 00:00:56.999999999", "Parse 2002-10-12T00:00:56.999999999+08:00")
 	_, off4 := With(n).MustParse("2002-10-12T00:14:56.999999999+08:00").Zone()
-	if (off4 != 28800) {
+	if off4 != 28800 {
 		t.Errorf("Parse 2002-10-12T00:14:56.999999999+08:00 shouldn't lose time zone offset")
 	}
 	assert(With(n).MustParse("2002-10-12T00:00:56.666666-07:00"), "2002-10-12 00:00:56.666666", "Parse 2002-10-12T00:00:56.666666-07:00")
 	_, off5 := With(n).MustParse("2002-10-12T00:00:56.666666-07:00").Zone()
-	if (off5 != -25200){
+	if off5 != -25200 {
 		t.Errorf("Parse 2002-10-12T00:00:56.666666-07:00 shouldn't lose time zone offset")
 	}
 	assert(With(n).MustParse("2002-10-12T00:01:12.999999999-06"), "2002-10-12 00:01:12.999999999", "Parse 2002-10-12T00:01:12.999999999-06")
 	_, off6 := With(n).MustParse("2002-10-12T00:01:12.999999999-06").Zone()
-	if (off6 != -21600){
+	if off6 != -21600 {
 		t.Errorf("Parse 2002-10-12T00:01:12.999999999-06 shouldn't lose time zone offset")
 	}
 
@@ -356,13 +356,13 @@ func TestParse(t *testing.T) {
 	}
 }
 
-func TestBetween(t *testing.T) {
+func TestMustBetween(t *testing.T) {
 	tm := time.Date(2015, 06, 30, 17, 51, 49, 123456789, time.Now().Location())
-	if !With(tm).Between("23:28:9 Dec 19, 2013 PST", "23:28:9 Dec 19, 2015 PST") {
+	if !With(tm).MustBetween("23:28:9 Dec 19, 2013 PST", "23:28:9 Dec 19, 2015 PST") {
 		t.Errorf("Between")
 	}
 
-	if !With(tm).Between("2015-05-12 12:20", "2015-06-30 17:51:50") {
+	if !With(tm).MustBetween("2015-05-12 12:20", "2015-06-30 17:51:50") {
 		t.Errorf("Between")
 	}
 }
@@ -446,4 +446,82 @@ func Example() {
 	Sunday()        // 2013-11-24 00:00:00 Sun
 	Sunday("17:44") // 2013-11-24 17:44:00 Sun
 	EndOfSunday()   // 2013-11-24 23:59:59.999999999 Sun
+}
+
+func TestNow_Between(t *testing.T) {
+	now := With(time.Date(2022, 11, 20, 13, 33, 23, 123456789, time.UTC))
+
+	type args struct {
+		begin string
+		end   string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		{
+			name: "",
+			args: args{
+				begin: "1970-01-01 00:00:00",
+				end:   "9999-12-31 23:59:59",
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "",
+			args: args{
+				begin: "1970-01-01",
+				end:   "9999-12-31",
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "",
+			args: args{
+				begin: "",
+				end:   "9999-12-31 23:59:59",
+			},
+			want:    false,
+			wantErr: true,
+		},
+		{
+			name: "",
+			args: args{
+				begin: "1970-01-01 00:00:00",
+				end:   "",
+			},
+			want:    false,
+			wantErr: true,
+		},
+		{
+			name: "",
+			args: args{
+				begin: "9999-12-31 23:59:59",
+				end:   "1970-01-01 00:00:00",
+			},
+			want:    false,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := now.Between(tt.args.begin, tt.args.end)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Between() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("Between() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestA(t *testing.T) {
+	now := With(time.Now())
+	now.MustBetween("1970-01-01 00:00:00", "9999-12-31 23:59:59")
 }
