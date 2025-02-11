@@ -131,72 +131,72 @@ func TestEndOf(t *testing.T) {
 
 	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.UTC)
 
-	assert(With(n).EndOfMinute(), "2013-11-18 17:51:59.999999999", "EndOfMinute")
+	assert(With(n).EndOfMinute(), "2013-11-18 17:52:00", "EndOfMinute")
 
-	assert(With(n).EndOfHour(), "2013-11-18 17:59:59.999999999", "EndOfHour")
+	assert(With(n).EndOfHour(), "2013-11-18 18:00:00", "EndOfHour")
 
-	assert(With(timeCaracas).EndOfHour(), "2016-01-01 12:59:59.999999999", "EndOfHour Caracas")
+	assert(With(timeCaracas).EndOfHour(), "2016-01-01 13:00:00", "EndOfHour Caracas")
 
-	assert(With(n).EndOfDay(), "2013-11-19 00:00:00.000000000", "EndOfDay")
+	assert(With(n).EndOfDay(), "2013-11-19 00:00:00", "EndOfDay")
 
 	dstEndOfDay := time.Date(2017, 10, 29, 1, 0, 0, 0, locationBerlin)
-	assert(With(dstEndOfDay).EndOfDay(), "2017-10-29 00:00:00.000000000", "EndOfDay DST")
+	assert(With(dstEndOfDay).EndOfDay(), "2017-10-29 00:00:00", "EndOfDay DST")
 
 	WeekStartDay = time.Tuesday
-	assert(With(n).EndOfWeek(), "2013-11-19 00:00:00.000000000", "EndOfWeek, FirstDayTuesday")
+	assert(With(n).EndOfWeek(), "2013-11-19 00:00:00", "EndOfWeek, FirstDayTuesday")
 
 	WeekStartDay = time.Wednesday
-	assert(With(n).EndOfWeek(), "2013-11-20 00:00:00.000000000", "EndOfWeek, FirstDayWednesday")
+	assert(With(n).EndOfWeek(), "2013-11-20 00:00:00", "EndOfWeek, FirstDayWednesday")
 
 	WeekStartDay = time.Thursday
-	assert(With(n).EndOfWeek(), "2013-11-21 00:00:00.000000000", "EndOfWeek, FirstDayThursday")
+	assert(With(n).EndOfWeek(), "2013-11-21 00:00:00", "EndOfWeek, FirstDayThursday")
 
 	WeekStartDay = time.Friday
-	assert(With(n).EndOfWeek(), "2013-11-22 00:00:00.000000000", "EndOfWeek, FirstDayFriday")
+	assert(With(n).EndOfWeek(), "2013-11-22 00:00:00", "EndOfWeek, FirstDayFriday")
 
 	WeekStartDay = time.Saturday
-	assert(With(n).EndOfWeek(), "2013-11-23 00:00:00.000000000", "EndOfWeek, FirstDaySaturday")
+	assert(With(n).EndOfWeek(), "2013-11-23 00:00:00", "EndOfWeek, FirstDaySaturday")
 
 	WeekStartDay = time.Sunday
-	assert(With(n).EndOfWeek(), "2013-11-24 00:00:00.000000000", "EndOfWeek, FirstDaySunday")
+	assert(With(n).EndOfWeek(), "2013-11-24 00:00:00", "EndOfWeek, FirstDaySunday")
 
 	WeekStartDay = time.Monday
-	assert(With(n).EndOfWeek(), "2013-11-25 00:00:00.000000000", "EndOfWeek, FirstDayMonday")
+	assert(With(n).EndOfWeek(), "2013-11-25 00:00:00", "EndOfWeek, FirstDayMonday")
 
 	dstEndOfWeek := time.Date(2017, 10, 24, 12, 0, 0, 0, locationBerlin)
-	assert(With(dstEndOfWeek).EndOfWeek(), "2017-10-30 00:00:00.000000000", "EndOfWeek, FirstDayMonday")
+	assert(With(dstEndOfWeek).EndOfWeek(), "2017-10-30 00:00:00", "EndOfWeek, FirstDayMonday")
 
 	dstEndOfWeek = time.Date(2017, 10, 29, 12, 0, 0, 0, locationBerlin)
-	assert(With(dstEndOfWeek).EndOfWeek(), "2017-10-30 00:00:00.000000000", "EndOfWeek, FirstDayMonday")
+	assert(With(dstEndOfWeek).EndOfWeek(), "2017-10-30 00:00:00", "EndOfWeek, FirstDayMonday")
 
 	WeekStartDay = time.Sunday
-	assert(With(n).EndOfWeek(), "2013-11-24 00:00:00.000000000", "EndOfWeek")
+	assert(With(n).EndOfWeek(), "2013-11-24 00:00:00", "EndOfWeek")
 
 	dstEndOfWeek = time.Date(2017, 10, 29, 0, 0, 0, 0, locationBerlin)
-	assert(With(dstEndOfWeek).EndOfWeek(), "2017-11-05 00:00:00.000000000", "EndOfWeek")
+	assert(With(dstEndOfWeek).EndOfWeek(), "2017-11-05 00:00:00", "EndOfWeek")
 
 	dstEndOfWeek = time.Date(2017, 10, 29, 12, 0, 0, 0, locationBerlin)
-	assert(With(dstEndOfWeek).EndOfWeek(), "2017-11-05 00:00:00.000000000", "EndOfWeek")
+	assert(With(dstEndOfWeek).EndOfWeek(), "2017-11-05 00:00:00", "EndOfWeek")
 
-	assert(With(n).EndOfMonth(), "2013-11-31 00:00:00.000000000", "EndOfMonth")
+	assert(With(n).EndOfMonth(), "2013-11-31 00:00:00", "EndOfMonth")
 
-	assert(With(n).EndOfQuarter(), "2014-01-01 00:00:00.000000000", "EndOfQuarter")
+	assert(With(n).EndOfQuarter(), "2014-01-01 00:00:00", "EndOfQuarter")
 
-	assert(With(n).EndOfHalf(), "2014-01-01 00:00:00.000000000", "EndOfHalf")
+	assert(With(n).EndOfHalf(), "2014-01-01 00:00:00", "EndOfHalf")
 
-	assert(With(n.AddDate(0, -1, 0)).EndOfQuarter(), "2014-01-01 00:00:00.000000000", "EndOfQuarter")
+	assert(With(n.AddDate(0, -1, 0)).EndOfQuarter(), "2014-01-01 00:00:00", "EndOfQuarter")
 
-	assert(With(n.AddDate(0, 1, 0)).EndOfQuarter(), "2014-01-01 00:00:00.000000000", "EndOfQuarter")
+	assert(With(n.AddDate(0, 1, 0)).EndOfQuarter(), "2014-01-01 00:00:00", "EndOfQuarter")
 
-	assert(With(n.AddDate(0, 1, 0)).EndOfHalf(), "2014-01-01 00:00:00.000000000", "EndOfHalf")
+	assert(With(n.AddDate(0, 1, 0)).EndOfHalf(), "2014-01-01 00:00:00", "EndOfHalf")
 
-	assert(With(n).EndOfYear(), "2014-01-01 00:00:00.000000000", "EndOfYear")
+	assert(With(n).EndOfYear(), "2014-01-01 00:00:00", "EndOfYear")
 
 	n1 := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.UTC)
-	assert(With(n1).EndOfMonth(), "2013-02-29 00:00:00.000000000", "EndOfMonth for 2013/02")
+	assert(With(n1).EndOfMonth(), "2013-02-29 00:00:00", "EndOfMonth for 2013/02")
 
 	n2 := time.Date(1900, 02, 18, 17, 51, 49, 123456789, time.UTC)
-	assert(With(n2).EndOfMonth(), "1900-02-29 00:00:00.000000000", "EndOfMonth")
+	assert(With(n2).EndOfMonth(), "1900-02-29 00:00:00", "EndOfMonth")
 }
 
 func TestMondayAndSunday(t *testing.T) {
@@ -230,11 +230,11 @@ func TestMondayAndSunday(t *testing.T) {
 
 	assert(With(nDst).Sunday(), "2017-10-29 00:00:00", "Sunday DST")
 
-	assert(With(n).EndOfSunday(), "2013-11-24 00:00:00.000000000", "EndOfSunday")
+	assert(With(n).EndOfSunday(), "2013-11-24 00:00:00", "EndOfSunday")
 
-	assert(With(timeCaracas).EndOfSunday(), "2016-01-03 00:00:00.000000000", "EndOfSunday Caracas")
+	assert(With(timeCaracas).EndOfSunday(), "2016-01-03 00:00:00", "EndOfSunday Caracas")
 
-	assert(With(nDst).EndOfSunday(), "2017-10-29 00:00:00.000000000", "EndOfSunday DST")
+	assert(With(nDst).EndOfSunday(), "2017-10-29 00:00:00", "EndOfSunday DST")
 
 	assert(With(n).BeginningOfWeek(), "2013-11-17 00:00:00", "BeginningOfWeek, FirstDayMonday")
 
@@ -427,24 +427,24 @@ func Example() {
 	BeginningOfQuarter()       // 2013-10-01 00:00:00 Tue
 	BeginningOfYear()          // 2013-01-01 00:00:00 Tue
 
-	EndOfMinute() // 2013-11-18 17:51:59.999999999 Mon
-	EndOfHour()   // 2013-11-18 17:59:59.999999999 Mon
-	EndOfDay()    // 2013-11-19 00:00:00.000000000 Mon
-	EndOfWeek()   // 2013-11-23 00:00:00.000000000 Sat
+	EndOfMinute() // 2013-11-18 17:52:00 Mon
+	EndOfHour()   // 2013-11-18 18:00:00 Mon
+	EndOfDay()    // 2013-11-19 00:00:00 Mon
+	EndOfWeek()   // 2013-11-23 00:00:00 Sat
 
 	WeekStartDay = time.Monday // Set Monday as first day
-	EndOfWeek()                // 2013-11-24 00:00:00.000000000 Sun
-	EndOfMonth()               // 2013-11-30 00:00:00.000000000 Sat
-	EndOfQuarter()             // 2013-12-31 00:00:00.000000000 Tue
-	EndOfYear()                // 2013-12-31 00:00:00.000000000 Tue
+	EndOfWeek()                // 2013-11-24 00:00:00 Sun
+	EndOfMonth()               // 2013-11-30 00:00:00 Sat
+	EndOfQuarter()             // 2013-12-31 00:00:00 Tue
+	EndOfYear()                // 2013-12-31 00:00:00 Tue
 
 	// Use another time
 	t := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.UTC)
-	With(t).EndOfMonth() // 2013-02-28 00:00:00.000000000 Thu
+	With(t).EndOfMonth() // 2013-02-28 00:00:00 Thu
 
 	Monday()        // 2013-11-18 00:00:00 Mon
 	Monday("17:44") // 2013-11-18 17:44:00 Mon
 	Sunday()        // 2013-11-24 00:00:00 Sun
 	Sunday("17:44") // 2013-11-24 17:44:00 Sun
-	EndOfSunday()   // 2013-11-24 00:00:00.000000000 Sun
+	EndOfSunday()   // 2013-11-24 00:00:00 Sun
 }
