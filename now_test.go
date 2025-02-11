@@ -428,7 +428,7 @@ func Example() {
 
 	EndOfMinute() // 2013-11-18 17:52:00 Mon
 	EndOfHour()   // 2013-11-18 18:00:00 Mon
-	EndOfDay()    // 2013-11-19 00:00:00 Mon
+	EndOfDay()    // 2013-11-18 00:00:00 Mon
 	EndOfWeek()   // 2013-11-23 00:00:00 Sat
 
 	WeekStartDay = time.Monday // Set Monday as first day
