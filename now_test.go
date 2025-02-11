@@ -429,21 +429,21 @@ func Example() {
 	EndOfMinute() // 2013-11-18 17:52:00 Mon
 	EndOfHour()   // 2013-11-18 18:00:00 Mon
 	EndOfDay()    // 2013-11-18 00:00:00 Mon
-	EndOfWeek()   // 2013-11-23 00:00:00 Sat
+	EndOfWeek()   // 2013-11-24 00:00:00 Sun
 
 	WeekStartDay = time.Monday // Set Monday as first day
-	EndOfWeek()                // 2013-11-24 00:00:00 Sun
-	EndOfMonth()               // 2013-11-30 00:00:00 Sat
-	EndOfQuarter()             // 2013-12-31 00:00:00 Tue
-	EndOfYear()                // 2013-12-31 00:00:00 Tue
+	EndOfWeek()                // 2013-11-25 00:00:00 Mon
+	EndOfMonth()               // 2014-01-01 00:00:00 Sun
+	EndOfQuarter()             // 2014-01-01 00:00:00 Wed
+	EndOfYear()                // 2014-01-01 00:00:00 Wed
 
 	// Use another time
 	t := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.UTC)
-	With(t).EndOfMonth() // 2013-02-28 00:00:00 Thu
+	With(t).EndOfMonth() // 2013-03-01 00:00:00 Thu
 
 	Monday()        // 2013-11-18 00:00:00 Mon
 	Monday("17:44") // 2013-11-18 17:44:00 Mon
 	Sunday()        // 2013-11-24 00:00:00 Sun
 	Sunday("17:44") // 2013-11-24 17:44:00 Sun
-	EndOfSunday()   // 2013-11-24 00:00:00 Sun
+	EndOfSunday()   // 2013-11-25 00:00:00 Sun
 }
