@@ -1,6 +1,5 @@
 package now
 
-// test
 import (
 	"testing"
 	"time"
