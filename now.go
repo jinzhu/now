@@ -240,8 +240,6 @@ func (now *Now) MustParse(strs ...string) (t time.Time) {
 }
 
 // Between check time between the begin, end time or not
-func (now *Now) Between(begin, end string) bool {
-	beginTime := now.MustParse(begin)
-	endTime := now.MustParse(end)
-	return now.After(beginTime) && now.Before(endTime)
+func (now *Now) Between(begin, end time.Time) bool {
+	return !now.Before(begin) && now.Before(end)
 }
