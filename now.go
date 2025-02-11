@@ -79,7 +79,7 @@ func (now *Now) EndOfHour() time.Time {
 // EndOfDay end of day
 func (now *Now) EndOfDay() time.Time {
 	y, m, d := now.Date()
-	return time.Date(y, m, d, 23, 59, 59, 0, now.Location()).Add(time.Second) // TODO is this always correct?
+	return time.Date(y, m, d, 23, 59, 0, 0, now.Location()).Add(time.Minute)
 }
 
 // EndOfWeek end of week

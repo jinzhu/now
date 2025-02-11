@@ -140,7 +140,7 @@ func TestEndOf(t *testing.T) {
 	assert(With(n).EndOfDay(), "2013-11-19 00:00:00", "EndOfDay")
 
 	dstEndOfDay := time.Date(2017, 10, 29, 1, 0, 0, 0, locationBerlin)
-	assert(With(dstEndOfDay).EndOfDay(), "2017-10-29 00:00:00", "EndOfDay DST")
+	assert(With(dstEndOfDay).EndOfDay(), "2017-10-30 00:00:00", "EndOfDay DST")
 
 	WeekStartDay = time.Tuesday
 	assert(With(n).EndOfWeek(), "2013-11-19 00:00:00", "EndOfWeek, FirstDayTuesday")
@@ -193,10 +193,10 @@ func TestEndOf(t *testing.T) {
 	assert(With(n).EndOfYear(), "2014-01-01 00:00:00", "EndOfYear")
 
 	n1 := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.UTC)
-	assert(With(n1).EndOfMonth(), "2013-02-29 00:00:00", "EndOfMonth for 2013/02")
+	assert(With(n1).EndOfMonth(), "2013-03-01 00:00:00", "EndOfMonth for 2013/02")
 
 	n2 := time.Date(1900, 02, 18, 17, 51, 49, 123456789, time.UTC)
-	assert(With(n2).EndOfMonth(), "1900-02-29 00:00:00", "EndOfMonth")
+	assert(With(n2).EndOfMonth(), "1900-03-01 00:00:00", "EndOfMonth")
 }
 
 func TestMondayAndSunday(t *testing.T) {
