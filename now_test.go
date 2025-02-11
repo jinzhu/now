@@ -136,66 +136,66 @@ func TestEndOf(t *testing.T) {
 
 	assert(With(timeCaracas).EndOfHour(), "2016-01-01 12:59:59.999999999", "EndOfHour Caracas")
 
-	assert(With(n).EndOfDay(), "2013-11-18 23:59:59.999999999", "EndOfDay")
+	assert(With(n).EndOfDay(), "2013-11-19 00:00:00.000000000", "EndOfDay")
 
 	dstEndOfDay := time.Date(2017, 10, 29, 1, 0, 0, 0, locationBerlin)
-	assert(With(dstEndOfDay).EndOfDay(), "2017-10-29 23:59:59.999999999", "EndOfDay DST")
+	assert(With(dstEndOfDay).EndOfDay(), "2017-10-29 00:00:00.000000000", "EndOfDay DST")
 
 	WeekStartDay = time.Tuesday
-	assert(With(n).EndOfWeek(), "2013-11-18 23:59:59.999999999", "EndOfWeek, FirstDayTuesday")
+	assert(With(n).EndOfWeek(), "2013-11-19 00:00:00.000000000", "EndOfWeek, FirstDayTuesday")
 
 	WeekStartDay = time.Wednesday
-	assert(With(n).EndOfWeek(), "2013-11-19 23:59:59.999999999", "EndOfWeek, FirstDayWednesday")
+	assert(With(n).EndOfWeek(), "2013-11-20 00:00:00.000000000", "EndOfWeek, FirstDayWednesday")
 
 	WeekStartDay = time.Thursday
-	assert(With(n).EndOfWeek(), "2013-11-20 23:59:59.999999999", "EndOfWeek, FirstDayThursday")
+	assert(With(n).EndOfWeek(), "2013-11-21 00:00:00.000000000", "EndOfWeek, FirstDayThursday")
 
 	WeekStartDay = time.Friday
-	assert(With(n).EndOfWeek(), "2013-11-21 23:59:59.999999999", "EndOfWeek, FirstDayFriday")
+	assert(With(n).EndOfWeek(), "2013-11-22 00:00:00.000000000", "EndOfWeek, FirstDayFriday")
 
 	WeekStartDay = time.Saturday
-	assert(With(n).EndOfWeek(), "2013-11-22 23:59:59.999999999", "EndOfWeek, FirstDaySaturday")
+	assert(With(n).EndOfWeek(), "2013-11-23 00:00:00.000000000", "EndOfWeek, FirstDaySaturday")
 
 	WeekStartDay = time.Sunday
-	assert(With(n).EndOfWeek(), "2013-11-23 23:59:59.999999999", "EndOfWeek, FirstDaySunday")
+	assert(With(n).EndOfWeek(), "2013-11-24 00:00:00.000000000", "EndOfWeek, FirstDaySunday")
 
 	WeekStartDay = time.Monday
-	assert(With(n).EndOfWeek(), "2013-11-24 23:59:59.999999999", "EndOfWeek, FirstDayMonday")
+	assert(With(n).EndOfWeek(), "2013-11-25 00:00:00.000000000", "EndOfWeek, FirstDayMonday")
 
 	dstEndOfWeek := time.Date(2017, 10, 24, 12, 0, 0, 0, locationBerlin)
-	assert(With(dstEndOfWeek).EndOfWeek(), "2017-10-29 23:59:59.999999999", "EndOfWeek, FirstDayMonday")
+	assert(With(dstEndOfWeek).EndOfWeek(), "2017-10-30 00:00:00.000000000", "EndOfWeek, FirstDayMonday")
 
 	dstEndOfWeek = time.Date(2017, 10, 29, 12, 0, 0, 0, locationBerlin)
-	assert(With(dstEndOfWeek).EndOfWeek(), "2017-10-29 23:59:59.999999999", "EndOfWeek, FirstDayMonday")
+	assert(With(dstEndOfWeek).EndOfWeek(), "2017-10-30 00:00:00.000000000", "EndOfWeek, FirstDayMonday")
 
 	WeekStartDay = time.Sunday
-	assert(With(n).EndOfWeek(), "2013-11-23 23:59:59.999999999", "EndOfWeek")
+	assert(With(n).EndOfWeek(), "2013-11-24 00:00:00.000000000", "EndOfWeek")
 
 	dstEndOfWeek = time.Date(2017, 10, 29, 0, 0, 0, 0, locationBerlin)
-	assert(With(dstEndOfWeek).EndOfWeek(), "2017-11-04 23:59:59.999999999", "EndOfWeek")
+	assert(With(dstEndOfWeek).EndOfWeek(), "2017-11-05 00:00:00.000000000", "EndOfWeek")
 
 	dstEndOfWeek = time.Date(2017, 10, 29, 12, 0, 0, 0, locationBerlin)
-	assert(With(dstEndOfWeek).EndOfWeek(), "2017-11-04 23:59:59.999999999", "EndOfWeek")
+	assert(With(dstEndOfWeek).EndOfWeek(), "2017-11-05 00:00:00.000000000", "EndOfWeek")
 
-	assert(With(n).EndOfMonth(), "2013-11-30 23:59:59.999999999", "EndOfMonth")
+	assert(With(n).EndOfMonth(), "2013-11-31 00:00:00.000000000", "EndOfMonth")
 
-	assert(With(n).EndOfQuarter(), "2013-12-31 23:59:59.999999999", "EndOfQuarter")
+	assert(With(n).EndOfQuarter(), "2014-01-01 00:00:00.000000000", "EndOfQuarter")
 
-	assert(With(n).EndOfHalf(), "2013-12-31 23:59:59.999999999", "EndOfHalf")
+	assert(With(n).EndOfHalf(), "2014-01-01 00:00:00.000000000", "EndOfHalf")
 
-	assert(With(n.AddDate(0, -1, 0)).EndOfQuarter(), "2013-12-31 23:59:59.999999999", "EndOfQuarter")
+	assert(With(n.AddDate(0, -1, 0)).EndOfQuarter(), "2014-01-01 00:00:00.000000000", "EndOfQuarter")
 
-	assert(With(n.AddDate(0, 1, 0)).EndOfQuarter(), "2013-12-31 23:59:59.999999999", "EndOfQuarter")
+	assert(With(n.AddDate(0, 1, 0)).EndOfQuarter(), "2014-01-01 00:00:00.000000000", "EndOfQuarter")
 
-	assert(With(n.AddDate(0, 1, 0)).EndOfHalf(), "2013-12-31 23:59:59.999999999", "EndOfHalf")
+	assert(With(n.AddDate(0, 1, 0)).EndOfHalf(), "2014-01-01 00:00:00.000000000", "EndOfHalf")
 
-	assert(With(n).EndOfYear(), "2013-12-31 23:59:59.999999999", "EndOfYear")
+	assert(With(n).EndOfYear(), "2014-01-01 00:00:00.000000000", "EndOfYear")
 
 	n1 := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.UTC)
-	assert(With(n1).EndOfMonth(), "2013-02-28 23:59:59.999999999", "EndOfMonth for 2013/02")
+	assert(With(n1).EndOfMonth(), "2013-02-29 00:00:00.000000000", "EndOfMonth for 2013/02")
 
 	n2 := time.Date(1900, 02, 18, 17, 51, 49, 123456789, time.UTC)
-	assert(With(n2).EndOfMonth(), "1900-02-28 23:59:59.999999999", "EndOfMonth")
+	assert(With(n2).EndOfMonth(), "1900-02-29 00:00:00.000000000", "EndOfMonth")
 }
 
 func TestMondayAndSunday(t *testing.T) {
@@ -229,11 +229,11 @@ func TestMondayAndSunday(t *testing.T) {
 
 	assert(With(nDst).Sunday(), "2017-10-29 00:00:00", "Sunday DST")
 
-	assert(With(n).EndOfSunday(), "2013-11-24 23:59:59.999999999", "EndOfSunday")
+	assert(With(n).EndOfSunday(), "2013-11-24 00:00:00.000000000", "EndOfSunday")
 
-	assert(With(timeCaracas).EndOfSunday(), "2016-01-03 23:59:59.999999999", "EndOfSunday Caracas")
+	assert(With(timeCaracas).EndOfSunday(), "2016-01-03 00:00:00.000000000", "EndOfSunday Caracas")
 
-	assert(With(nDst).EndOfSunday(), "2017-10-29 23:59:59.999999999", "EndOfSunday DST")
+	assert(With(nDst).EndOfSunday(), "2017-10-29 00:00:00.000000000", "EndOfSunday DST")
 
 	assert(With(n).BeginningOfWeek(), "2013-11-17 00:00:00", "BeginningOfWeek, FirstDayMonday")
 
@@ -292,32 +292,32 @@ func TestParse(t *testing.T) {
 
 	assert(With(n).MustParse("2002-10-12T00:14:56+08:00"), "2002-10-12 00:14:56", "Parse 2002-10-12T00:14:56+08:00")
 	_, off := With(n).MustParse("2002-10-12T00:14:56+08:00").Zone()
-	if (off != 28800) {
+	if off != 28800 {
 		t.Errorf("Parse 2002-10-12T00:14:56+08:00 shouldn't lose time zone offset")
 	}
 	assert(With(n).MustParse("2002-10-12T00:00:56-07:00"), "2002-10-12 00:00:56", "Parse 2002-10-12T00:00:56-07:00")
 	_, off2 := With(n).MustParse("2002-10-12T00:00:56-07:00").Zone()
-	if (off2 != -25200){
+	if off2 != -25200 {
 		t.Errorf("Parse 2002-10-12T00:00:56-07:00 shouldn't lose time zone offset")
 	}
 	assert(With(n).MustParse("2002-10-12T00:01:12.333+0200"), "2002-10-12 00:01:12.333", "Parse 2002-10-12T00:01:12.333+0200")
 	_, off3 := With(n).MustParse("2002-10-12T00:01:12.333+0200").Zone()
-	if (off3 != 7200){
+	if off3 != 7200 {
 		t.Errorf("Parse 2002-10-12T00:01:12.333+0200 shouldn't lose time zone offset")
 	}
 	assert(With(n).MustParse("2002-10-12T00:00:56.999999999+08:00"), "2002-10-12 00:00:56.999999999", "Parse 2002-10-12T00:00:56.999999999+08:00")
 	_, off4 := With(n).MustParse("2002-10-12T00:14:56.999999999+08:00").Zone()
-	if (off4 != 28800) {
+	if off4 != 28800 {
 		t.Errorf("Parse 2002-10-12T00:14:56.999999999+08:00 shouldn't lose time zone offset")
 	}
 	assert(With(n).MustParse("2002-10-12T00:00:56.666666-07:00"), "2002-10-12 00:00:56.666666", "Parse 2002-10-12T00:00:56.666666-07:00")
 	_, off5 := With(n).MustParse("2002-10-12T00:00:56.666666-07:00").Zone()
-	if (off5 != -25200){
+	if off5 != -25200 {
 		t.Errorf("Parse 2002-10-12T00:00:56.666666-07:00 shouldn't lose time zone offset")
 	}
 	assert(With(n).MustParse("2002-10-12T00:01:12.999999999-06"), "2002-10-12 00:01:12.999999999", "Parse 2002-10-12T00:01:12.999999999-06")
 	_, off6 := With(n).MustParse("2002-10-12T00:01:12.999999999-06").Zone()
-	if (off6 != -21600){
+	if off6 != -21600 {
 		t.Errorf("Parse 2002-10-12T00:01:12.999999999-06 shouldn't lose time zone offset")
 	}
 
@@ -358,11 +358,11 @@ func TestParse(t *testing.T) {
 
 func TestBetween(t *testing.T) {
 	tm := time.Date(2015, 06, 30, 17, 51, 49, 123456789, time.Now().Location())
-	if !With(tm).Between("23:28:9 Dec 19, 2013 PST", "23:28:9 Dec 19, 2015 PST") {
+	if !With(tm).Between(MustParse("23:28:9 Dec 19, 2013 PST"), MustParse("23:28:9 Dec 19, 2015 PST")) {
 		t.Errorf("Between")
 	}
 
-	if !With(tm).Between("2015-05-12 12:20", "2015-06-30 17:51:50") {
+	if !With(tm).Between(MustParse("2015-05-12 12:20"), MustParse("2015-06-30 17:51:50")) {
 		t.Errorf("Between")
 	}
 }
@@ -428,22 +428,22 @@ func Example() {
 
 	EndOfMinute() // 2013-11-18 17:51:59.999999999 Mon
 	EndOfHour()   // 2013-11-18 17:59:59.999999999 Mon
-	EndOfDay()    // 2013-11-18 23:59:59.999999999 Mon
-	EndOfWeek()   // 2013-11-23 23:59:59.999999999 Sat
+	EndOfDay()    // 2013-11-19 00:00:00.000000000 Mon
+	EndOfWeek()   // 2013-11-23 00:00:00.000000000 Sat
 
 	WeekStartDay = time.Monday // Set Monday as first day
-	EndOfWeek()                // 2013-11-24 23:59:59.999999999 Sun
-	EndOfMonth()               // 2013-11-30 23:59:59.999999999 Sat
-	EndOfQuarter()             // 2013-12-31 23:59:59.999999999 Tue
-	EndOfYear()                // 2013-12-31 23:59:59.999999999 Tue
+	EndOfWeek()                // 2013-11-24 00:00:00.000000000 Sun
+	EndOfMonth()               // 2013-11-30 00:00:00.000000000 Sat
+	EndOfQuarter()             // 2013-12-31 00:00:00.000000000 Tue
+	EndOfYear()                // 2013-12-31 00:00:00.000000000 Tue
 
 	// Use another time
 	t := time.Date(2013, 02, 18, 17, 51, 49, 123456789, time.UTC)
-	With(t).EndOfMonth() // 2013-02-28 23:59:59.999999999 Thu
+	With(t).EndOfMonth() // 2013-02-28 00:00:00.000000000 Thu
 
 	Monday()        // 2013-11-18 00:00:00 Mon
 	Monday("17:44") // 2013-11-18 17:44:00 Mon
 	Sunday()        // 2013-11-24 00:00:00 Sun
 	Sunday("17:44") // 2013-11-24 17:44:00 Sun
-	EndOfSunday()   // 2013-11-24 23:59:59.999999999 Sun
+	EndOfSunday()   // 2013-11-24 00:00:00.000000000 Sun
 }

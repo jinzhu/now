@@ -68,43 +68,43 @@ func (now *Now) BeginningOfYear() time.Time {
 
 // EndOfMinute end of minute
 func (now *Now) EndOfMinute() time.Time {
-	return now.BeginningOfMinute().Add(time.Minute - time.Nanosecond)
+	return now.BeginningOfMinute().Add(time.Minute)
 }
 
 // EndOfHour end of hour
 func (now *Now) EndOfHour() time.Time {
-	return now.BeginningOfHour().Add(time.Hour - time.Nanosecond)
+	return now.BeginningOfHour().Add(time.Hour)
 }
 
 // EndOfDay end of day
 func (now *Now) EndOfDay() time.Time {
 	y, m, d := now.Date()
-	return time.Date(y, m, d, 23, 59, 59, int(time.Second-time.Nanosecond), now.Location())
+	return time.Date(y, m, d, 23, 59, 59, 0, now.Location()).Add(time.Second) // TODO is this always correct?
 }
 
 // EndOfWeek end of week
 func (now *Now) EndOfWeek() time.Time {
-	return now.BeginningOfWeek().AddDate(0, 0, 7).Add(-time.Nanosecond)
+	return now.BeginningOfWeek().AddDate(0, 0, 7)
 }
 
 // EndOfMonth end of month
 func (now *Now) EndOfMonth() time.Time {
-	return now.BeginningOfMonth().AddDate(0, 1, 0).Add(-time.Nanosecond)
+	return now.BeginningOfMonth().AddDate(0, 1, 0)
 }
 
 // EndOfQuarter end of quarter
 func (now *Now) EndOfQuarter() time.Time {
-	return now.BeginningOfQuarter().AddDate(0, 3, 0).Add(-time.Nanosecond)
+	return now.BeginningOfQuarter().AddDate(0, 3, 0)
 }
 
 // EndOfHalf end of half year
 func (now *Now) EndOfHalf() time.Time {
-	return now.BeginningOfHalf().AddDate(0, 6, 0).Add(-time.Nanosecond)
+	return now.BeginningOfHalf().AddDate(0, 6, 0)
 }
 
 // EndOfYear end of year
 func (now *Now) EndOfYear() time.Time {
-	return now.BeginningOfYear().AddDate(1, 0, 0).Add(-time.Nanosecond)
+	return now.BeginningOfYear().AddDate(1, 0, 0)
 }
 
 // Monday monday
@@ -177,8 +177,10 @@ func (now *Now) parseWithFormat(str string, location *time.Location) (t time.Tim
 	return
 }
 
-var hasTimeRegexp = regexp.MustCompile(`(\s+|^\s*|T)\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))(\s*$|[Z+-])`) // match 15:04:05, 15:04:05.000, 15:04:05.000000 15, 2017-01-01 15:04, 2021-07-20T00:59:10Z, 2021-07-20T00:59:10+08:00, 2021-07-20T00:00:10-07:00 etc
-var onlyTimeRegexp = regexp.MustCompile(`^\s*\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))\s*$`)            // match 15:04:05, 15, 15:04:05.000, 15:04:05.000000, etc
+var (
+	hasTimeRegexp  = regexp.MustCompile(`(\s+|^\s*|T)\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))(\s*$|[Z+-])`) // match 15:04:05, 15:04:05.000, 15:04:05.000000 15, 2017-01-01 15:04, 2021-07-20T00:59:10Z, 2021-07-20T00:59:10+08:00, 2021-07-20T00:00:10-07:00 etc
+	onlyTimeRegexp = regexp.MustCompile(`^\s*\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))\s*$`)                 // match 15:04:05, 15, 15:04:05.000, 15:04:05.000000, etc
+)
 
 // Parse parse string to time
 func (now *Now) Parse(strs ...string) (t time.Time, err error) {
