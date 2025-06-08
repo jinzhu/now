@@ -412,6 +412,19 @@ func TestQuarter(t *testing.T) {
 	}
 }
 
+type MockClock struct {}
+
+func (*MockClock) Now() time.Time {
+	return time.Date(2022, time.January, 1, 10, 0, 0, 0, time.Local)
+}
+
+func TestClock(t *testing.T) {
+	assert := assertT(t)
+
+	DefaultClock = &MockClock{}
+	assert(BeginningOfMinute(), "2022-01-01 10:00:00", "TestClock - BeginningOfMinute")
+}
+
 func Example() {
 	time.Now() // 2013-11-18 17:51:49.123456789 Mon
 

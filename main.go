@@ -44,18 +44,18 @@ func (config *Config) With(t time.Time) *Now {
 // Parse parses string to time based on configuration
 func (config *Config) Parse(strs ...string) (time.Time, error) {
 	if config.TimeLocation == nil {
-		return config.With(time.Now()).Parse(strs...)
+		return config.With(DefaultClock.Now()).Parse(strs...)
 	} else {
-		return config.With(time.Now().In(config.TimeLocation)).Parse(strs...)
+		return config.With(DefaultClock.Now().In(config.TimeLocation)).Parse(strs...)
 	}
 }
 
 // MustParse must parse string to time or will panic
 func (config *Config) MustParse(strs ...string) time.Time {
 	if config.TimeLocation == nil {
-		return config.With(time.Now()).MustParse(strs...)
+		return config.With(DefaultClock.Now()).MustParse(strs...)
 	} else {
-		return config.With(time.Now().In(config.TimeLocation)).MustParse(strs...)
+		return config.With(DefaultClock.Now().In(config.TimeLocation)).MustParse(strs...)
 	}
 }
 
@@ -83,117 +83,125 @@ func New(t time.Time) *Now {
 	return With(t)
 }
 
+// DefaultClock with TimeClock
+var DefaultClock Clock = &TimeClock{}
+
+// ResetClock reset default clock to TimeClock
+func ResetClock() {
+	DefaultClock = &TimeClock{}
+}
+
 // BeginningOfMinute beginning of minute
 func BeginningOfMinute() time.Time {
-	return With(time.Now()).BeginningOfMinute()
+	return With(DefaultClock.Now()).BeginningOfMinute()
 }
 
 // BeginningOfHour beginning of hour
 func BeginningOfHour() time.Time {
-	return With(time.Now()).BeginningOfHour()
+	return With(DefaultClock.Now()).BeginningOfHour()
 }
 
 // BeginningOfDay beginning of day
 func BeginningOfDay() time.Time {
-	return With(time.Now()).BeginningOfDay()
+	return With(DefaultClock.Now()).BeginningOfDay()
 }
 
 // BeginningOfWeek beginning of week
 func BeginningOfWeek() time.Time {
-	return With(time.Now()).BeginningOfWeek()
+	return With(DefaultClock.Now()).BeginningOfWeek()
 }
 
 // BeginningOfMonth beginning of month
 func BeginningOfMonth() time.Time {
-	return With(time.Now()).BeginningOfMonth()
+	return With(DefaultClock.Now()).BeginningOfMonth()
 }
 
 // BeginningOfQuarter beginning of quarter
 func BeginningOfQuarter() time.Time {
-	return With(time.Now()).BeginningOfQuarter()
+	return With(DefaultClock.Now()).BeginningOfQuarter()
 }
 
 // BeginningOfYear beginning of year
 func BeginningOfYear() time.Time {
-	return With(time.Now()).BeginningOfYear()
+	return With(DefaultClock.Now()).BeginningOfYear()
 }
 
 // EndOfMinute end of minute
 func EndOfMinute() time.Time {
-	return With(time.Now()).EndOfMinute()
+	return With(DefaultClock.Now()).EndOfMinute()
 }
 
 // EndOfHour end of hour
 func EndOfHour() time.Time {
-	return With(time.Now()).EndOfHour()
+	return With(DefaultClock.Now()).EndOfHour()
 }
 
 // EndOfDay end of day
 func EndOfDay() time.Time {
-	return With(time.Now()).EndOfDay()
+	return With(DefaultClock.Now()).EndOfDay()
 }
 
 // EndOfWeek end of week
 func EndOfWeek() time.Time {
-	return With(time.Now()).EndOfWeek()
+	return With(DefaultClock.Now()).EndOfWeek()
 }
 
 // EndOfMonth end of month
 func EndOfMonth() time.Time {
-	return With(time.Now()).EndOfMonth()
+	return With(DefaultClock.Now()).EndOfMonth()
 }
 
 // EndOfQuarter end of quarter
 func EndOfQuarter() time.Time {
-	return With(time.Now()).EndOfQuarter()
+	return With(DefaultClock.Now()).EndOfQuarter()
 }
 
 // EndOfYear end of year
 func EndOfYear() time.Time {
-	return With(time.Now()).EndOfYear()
+	return With(DefaultClock.Now()).EndOfYear()
 }
 
 // Monday returns the time.Time value of Monday
 func Monday(strs ...string) time.Time {
-	return With(time.Now()).Monday(strs...)
+	return With(DefaultClock.Now()).Monday(strs...)
 }
 
 // Sunday returns the time.Time value of Sunday
 func Sunday(strs ...string) time.Time {
-	return With(time.Now()).Sunday(strs...)
+	return With(DefaultClock.Now()).Sunday(strs...)
 }
 
 // EndOfSunday end of sunday
 func EndOfSunday() time.Time {
-	return With(time.Now()).EndOfSunday()
+	return With(DefaultClock.Now()).EndOfSunday()
 }
 
 // Quarter returns the yearly quarter
 func Quarter() uint {
-	return With(time.Now()).Quarter()
+	return With(DefaultClock.Now()).Quarter()
 }
 
 // Parse parse string to time
 func Parse(strs ...string) (time.Time, error) {
-	return With(time.Now()).Parse(strs...)
+	return With(DefaultClock.Now()).Parse(strs...)
 }
 
 // ParseInLocation parse string to time in location
 func ParseInLocation(loc *time.Location, strs ...string) (time.Time, error) {
-	return With(time.Now().In(loc)).Parse(strs...)
+	return With(DefaultClock.Now().In(loc)).Parse(strs...)
 }
 
 // MustParse must parse string to time or will panic
 func MustParse(strs ...string) time.Time {
-	return With(time.Now()).MustParse(strs...)
+	return With(DefaultClock.Now()).MustParse(strs...)
 }
 
 // MustParseInLocation must parse string to time in location or will panic
 func MustParseInLocation(loc *time.Location, strs ...string) time.Time {
-	return With(time.Now().In(loc)).MustParse(strs...)
+	return With(DefaultClock.Now().In(loc)).MustParse(strs...)
 }
 
 // Between check now between the begin, end time or not
 func Between(time1, time2 string) bool {
-	return With(time.Now()).Between(time1, time2)
+	return With(DefaultClock.Now()).Between(time1, time2)
 }
