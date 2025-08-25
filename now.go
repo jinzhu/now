@@ -138,6 +138,101 @@ func (now *Now) Monday(strs ...string) time.Time {
 	return parseTime.AddDate(0, 0, -weekday+1)
 }
 
+// Tuesday returns the Tuesday Date of the week specified by now
+func (now *Now) Tuesday(strs ...string) time.Time {
+	var parseTime time.Time
+	var err error
+	if len(strs) > 0 {
+		parseTime, err = now.Parse(strs...)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		parseTime = now.BeginningOfDay()
+	}
+	weekday := int(parseTime.Weekday())
+	if weekday == 0 {
+		weekday = 7
+	}
+	return parseTime.AddDate(0, 0, -weekday+2)
+}
+
+// Wednesday returns the Wednesday Date of the week specified by now
+func (now *Now) Wednesday(strs ...string) time.Time {
+	var parseTime time.Time
+	var err error
+	if len(strs) > 0 {
+		parseTime, err = now.Parse(strs...)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		parseTime = now.BeginningOfDay()
+	}
+	weekday := int(parseTime.Weekday())
+	if weekday == 0 {
+		weekday = 7
+	}
+	return parseTime.AddDate(0, 0, -weekday+3)
+}
+
+// Thursday returns the Thursday Date of the week specified by now
+func (now *Now) Thursday(strs ...string) time.Time {
+	var parseTime time.Time
+	var err error
+	if len(strs) > 0 {
+		parseTime, err = now.Parse(strs...)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		parseTime = now.BeginningOfDay()
+	}
+	weekday := int(parseTime.Weekday())
+	if weekday == 0 {
+		weekday = 7
+	}
+	return parseTime.AddDate(0, 0, -weekday+4)
+}
+
+// Friday returns the Friday Date of the week specified by now
+func (now *Now) Friday(strs ...string) time.Time {
+	var parseTime time.Time
+	var err error
+	if len(strs) > 0 {
+		parseTime, err = now.Parse(strs...)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		parseTime = now.BeginningOfDay()
+	}
+	weekday := int(parseTime.Weekday())
+	if weekday == 0 {
+		weekday = 7
+	}
+	return parseTime.AddDate(0, 0, -weekday+5)
+}
+
+// Saturday returns the Saturday Date of the week specified by now
+func (now *Now) Saturday(strs ...string) time.Time {
+	var parseTime time.Time
+	var err error
+	if len(strs) > 0 {
+		parseTime, err = now.Parse(strs...)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		parseTime = now.BeginningOfDay()
+	}
+	weekday := int(parseTime.Weekday())
+	if weekday == 0 {
+		weekday = 7
+	}
+	return parseTime.AddDate(0, 0, -weekday+6)
+}
+
 // Sunday returns the Sunday Date of the week specified by now
 func (now *Now) Sunday(strs ...string) time.Time {
 	var parseTime time.Time
@@ -180,7 +275,7 @@ func (now *Now) parseWithFormat(str string, location *time.Location) (t time.Tim
 }
 
 var hasTimeRegexp = regexp.MustCompile(`(\s+|^\s*|T)\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))(\s*$|[Z+-])`) // match 15:04:05, 15:04:05.000, 15:04:05.000000 15, 2017-01-01 15:04, 2021-07-20T00:59:10Z, 2021-07-20T00:59:10+08:00, 2021-07-20T00:00:10-07:00 etc
-var onlyTimeRegexp = regexp.MustCompile(`^\s*\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))\s*$`)            // match 15:04:05, 15, 15:04:05.000, 15:04:05.000000, etc
+var onlyTimeRegexp = regexp.MustCompile(`^\s*\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))\s*$`)                // match 15:04:05, 15, 15:04:05.000, 15:04:05.000000, etc
 
 // Parse parses string to time
 func (now *Now) Parse(strs ...string) (t time.Time, err error) {
@@ -244,4 +339,37 @@ func (now *Now) Between(begin, end string) bool {
 	beginTime := now.MustParse(begin)
 	endTime := now.MustParse(end)
 	return now.After(beginTime) && now.Before(endTime)
+}
+
+// IsToday checks if the given time is within today
+func IsToday(t time.Time) bool {
+	n := New(time.Now())
+	beginningOfDay := n.BeginningOfDay()
+	endOfDay := n.EndOfDay()
+	return (t.Equal(beginningOfDay) || t.After(beginningOfDay)) && (t.Equal(endOfDay) || t.Before(endOfDay))
+}
+
+// IsTimestampToday checks if the given Unix timestamp (in seconds, 10 digits) is within today
+func IsTimestampToday(timestamp float64) bool {
+	t := time.Unix(int64(timestamp), int64((timestamp-float64(int64(timestamp)))*1e9))
+	return IsToday(t)
+}
+
+// IsMillisecondTimestampToday checks if the given Unix timestamp (in milliseconds, 13 digits) is within today
+func IsMillisecondTimestampToday(timestamp float64) bool {
+	seconds := int64(timestamp / 1000)
+	nanoseconds := int64((timestamp - float64(seconds*1000)) * 1e6)
+	t := time.Unix(seconds, nanoseconds)
+	return IsToday(t)
+}
+
+// IsWeekend checks if the given time is Saturday or Sunday
+func IsWeekend(t time.Time) bool {
+	weekday := t.Weekday()
+	return weekday == time.Saturday || weekday == time.Sunday
+}
+
+// IsWeekday checks if the given time is Monday through Friday
+func IsWeekday(t time.Time) bool {
+	return !IsWeekend(t)
 }
