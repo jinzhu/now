@@ -121,6 +121,11 @@ func (now *Now) Monday() time.Time {
 
 // Monday returns the Monday Date of the week specified by now
 func (now *Now) Monday(strs ...string) time.Time {
+	return now.weekdayHelper(time.Monday, strs...)
+}
+
+// weekdayHelper consolidates the common weekday logic
+func (now *Now) weekdayHelper(targetWeekday time.Weekday, strs ...string) time.Time {
 	var parseTime time.Time
 	var err error
 	if len(strs) > 0 {
@@ -131,30 +136,48 @@ func (now *Now) Monday(strs ...string) time.Time {
 	} else {
 		parseTime = now.BeginningOfDay()
 	}
+
 	weekday := int(parseTime.Weekday())
 	if weekday == 0 {
 		weekday = 7
 	}
-	return parseTime.AddDate(0, 0, -weekday+1)
+
+	targetDay := int(targetWeekday)
+	if targetDay == 0 {
+		targetDay = 7
+	}
+
+	return parseTime.AddDate(0, 0, -weekday+targetDay)
+}
+
+// Tuesday returns the Tuesday Date of the week specified by now
+func (now *Now) Tuesday(strs ...string) time.Time {
+	return now.weekdayHelper(time.Tuesday, strs...)
+}
+
+// Wednesday returns the Wednesday Date of the week specified by now
+func (now *Now) Wednesday(strs ...string) time.Time {
+	return now.weekdayHelper(time.Wednesday, strs...)
+}
+
+// Thursday returns the Thursday Date of the week specified by now
+func (now *Now) Thursday(strs ...string) time.Time {
+	return now.weekdayHelper(time.Thursday, strs...)
+}
+
+// Friday returns the Friday Date of the week specified by now
+func (now *Now) Friday(strs ...string) time.Time {
+	return now.weekdayHelper(time.Friday, strs...)
+}
+
+// Saturday returns the Saturday Date of the week specified by now
+func (now *Now) Saturday(strs ...string) time.Time {
+	return now.weekdayHelper(time.Saturday, strs...)
 }
 
 // Sunday returns the Sunday Date of the week specified by now
 func (now *Now) Sunday(strs ...string) time.Time {
-	var parseTime time.Time
-	var err error
-	if len(strs) > 0 {
-		parseTime, err = now.Parse(strs...)
-		if err != nil {
-			panic(err)
-		}
-	} else {
-		parseTime = now.BeginningOfDay()
-	}
-	weekday := int(parseTime.Weekday())
-	if weekday == 0 {
-		weekday = 7
-	}
-	return parseTime.AddDate(0, 0, (7 - weekday))
+	return now.weekdayHelper(time.Sunday, strs...)
 }
 
 // EndOfSunday end of sunday
@@ -165,6 +188,61 @@ func (now *Now) EndOfSunday() time.Time {
 // Quarter returns the yearly quarter
 func (now *Now) Quarter() uint {
 	return (uint(now.Month())-1)/3 + 1
+}
+
+// Add returns a new Now instance with added duration
+func (now *Now) Add(d time.Duration) *Now {
+	return New(now.Time.Add(d))
+}
+
+// AddDays returns a new Now instance with added days
+func (now *Now) AddDays(days int) *Now {
+	return New(now.Time.AddDate(0, 0, days))
+}
+
+// AddWeeks returns a new Now instance with added weeks
+func (now *Now) AddWeeks(weeks int) *Now {
+	return New(now.Time.AddDate(0, 0, weeks*7))
+}
+
+// AddMonths returns a new Now instance with added months
+func (now *Now) AddMonths(months int) *Now {
+	return New(now.Time.AddDate(0, months, 0))
+}
+
+// AddYears returns a new Now instance with added years
+func (now *Now) AddYears(years int) *Now {
+	return New(now.Time.AddDate(years, 0, 0))
+}
+
+// FormatDate returns formatted date string (YYYY-MM-DD)
+func (now *Now) FormatDate() string {
+	return now.Format(DateFormat)
+}
+
+// FormatTime returns formatted time string (HH:MM:SS)
+func (now *Now) FormatTime() string {
+	return now.Format(TimeFormat)
+}
+
+// FormatDateTime returns formatted datetime string (YYYY-MM-DD HH:MM:SS)
+func (now *Now) FormatDateTime() string {
+	return now.Format(DateTimeFormat)
+}
+
+// FormatISO8601 returns formatted ISO8601 string
+func (now *Now) FormatISO8601() string {
+	return now.Format(ISO8601Format)
+}
+
+// FormatUS returns US formatted date string (MM/DD/YYYY)
+func (now *Now) FormatUS() string {
+	return now.Format(USFormat)
+}
+
+// FormatEuropean returns European formatted date string (DD/MM/YYYY)
+func (now *Now) FormatEuropean() string {
+	return now.Format(EuropeanFormat)
 }
 
 func (now *Now) parseWithFormat(str string, location *time.Location) (t time.Time, err error) {
@@ -180,7 +258,7 @@ func (now *Now) parseWithFormat(str string, location *time.Location) (t time.Tim
 }
 
 var hasTimeRegexp = regexp.MustCompile(`(\s+|^\s*|T)\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))(\s*$|[Z+-])`) // match 15:04:05, 15:04:05.000, 15:04:05.000000 15, 2017-01-01 15:04, 2021-07-20T00:59:10Z, 2021-07-20T00:59:10+08:00, 2021-07-20T00:00:10-07:00 etc
-var onlyTimeRegexp = regexp.MustCompile(`^\s*\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))\s*$`)            // match 15:04:05, 15, 15:04:05.000, 15:04:05.000000, etc
+var onlyTimeRegexp = regexp.MustCompile(`^\s*\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))\s*$`)                // match 15:04:05, 15, 15:04:05.000, 15:04:05.000000, etc
 
 // Parse parses string to time
 func (now *Now) Parse(strs ...string) (t time.Time, err error) {
@@ -244,4 +322,117 @@ func (now *Now) Between(begin, end string) bool {
 	beginTime := now.MustParse(begin)
 	endTime := now.MustParse(end)
 	return now.After(beginTime) && now.Before(endTime)
+}
+
+// IsToday checks if the given time is within today
+func IsToday(t time.Time) bool {
+	n := New(time.Now())
+	beginningOfDay := n.BeginningOfDay()
+	endOfDay := n.EndOfDay()
+	return (t.Equal(beginningOfDay) || t.After(beginningOfDay)) && (t.Equal(endOfDay) || t.Before(endOfDay))
+}
+
+// IsTimestampToday checks if the given Unix timestamp (in seconds, 10 digits) is within today
+func IsTimestampToday(timestamp float64) bool {
+	t := time.Unix(int64(timestamp), int64((timestamp-float64(int64(timestamp)))*1e9))
+	return IsToday(t)
+}
+
+// IsMillisecondTimestampToday checks if the given Unix timestamp (in milliseconds, 13 digits) is within today
+func IsMillisecondTimestampToday(timestamp float64) bool {
+	seconds := int64(timestamp / 1000)
+	nanoseconds := int64((timestamp - float64(seconds*1000)) * 1e6)
+	t := time.Unix(seconds, nanoseconds)
+	return IsToday(t)
+}
+
+// IsWeekend checks if the given time is Saturday or Sunday
+func IsWeekend(t time.Time) bool {
+	weekday := t.Weekday()
+	return weekday == time.Saturday || weekday == time.Sunday
+}
+
+// IsWeekday checks if the given time is Monday through Friday
+func IsWeekday(t time.Time) bool {
+	return !IsWeekend(t)
+}
+
+// isSameDay checks if two times are on the same day
+func isSameDay(t1, t2 time.Time) bool {
+	y1, m1, d1 := t1.Date()
+	y2, m2, d2 := t2.Date()
+	return y1 == y2 && m1 == m2 && d1 == d2
+}
+
+// IsYesterday checks if the given time is yesterday
+func IsYesterday(t time.Time) bool {
+	yesterday := time.Now().AddDate(0, 0, -1)
+	return isSameDay(t, yesterday)
+}
+
+// IsTomorrow checks if the given time is tomorrow
+func IsTomorrow(t time.Time) bool {
+	tomorrow := time.Now().AddDate(0, 0, 1)
+	return isSameDay(t, tomorrow)
+}
+
+// IsSameWeek checks if two times are in the same week
+func IsSameWeek(t1, t2 time.Time) bool {
+	w1 := With(t1)
+	w2 := With(t2)
+	return w1.BeginningOfWeek().Equal(w2.BeginningOfWeek())
+}
+
+// IsSameMonth checks if two times are in the same month
+func IsSameMonth(t1, t2 time.Time) bool {
+	return t1.Year() == t2.Year() && t1.Month() == t2.Month()
+}
+
+// IsSameYear checks if two times are in the same year
+func IsSameYear(t1, t2 time.Time) bool {
+	return t1.Year() == t2.Year()
+}
+
+// DaysUntil returns the number of days until the target time
+func DaysUntil(target time.Time) int {
+	now := time.Now()
+	nowDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	targetDay := time.Date(target.Year(), target.Month(), target.Day(), 0, 0, 0, 0, target.Location())
+	diff := targetDay.Sub(nowDay)
+	return int(diff.Hours() / 24)
+}
+
+// DaysSince returns the number of days since the target time
+func DaysSince(target time.Time) int {
+	now := time.Now()
+	nowDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	targetDay := time.Date(target.Year(), target.Month(), target.Day(), 0, 0, 0, 0, target.Location())
+	diff := nowDay.Sub(targetDay)
+	return int(diff.Hours() / 24)
+}
+
+// WeeksUntil returns the number of weeks until the target time
+func WeeksUntil(target time.Time) int {
+	return DaysUntil(target) / 7
+}
+
+// WeeksSince returns the number of weeks since the target time
+func WeeksSince(target time.Time) int {
+	return DaysSince(target) / 7
+}
+
+// MonthsUntil returns the approximate number of months until the target time
+func MonthsUntil(target time.Time) int {
+	now := time.Now()
+	years := target.Year() - now.Year()
+	months := int(target.Month()) - int(now.Month())
+	return years*12 + months
+}
+
+// MonthsSince returns the approximate number of months since the target time
+func MonthsSince(target time.Time) int {
+	now := time.Now()
+	years := now.Year() - target.Year()
+	months := int(now.Month()) - int(target.Month())
+	return years*12 + months
 }

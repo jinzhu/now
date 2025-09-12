@@ -345,6 +345,319 @@ func TestParse(t *testing.T) {
 
 	TimeFormats = append(TimeFormats, "15:04:05.000")
 	assert(With(n).MustParse("13:00:01.365"), "2013-11-18 13:00:01.365", "Parse 13:00:01.365")
+}
+
+func TestIsToday(t *testing.T) {
+	now := time.Now()
+	if !IsToday(now) {
+		t.Error("Current time should be today")
+	}
+
+	yesterday := now.AddDate(0, 0, -1)
+	if IsToday(yesterday) {
+		t.Error("Yesterday should not be today")
+	}
+
+	tomorrow := now.AddDate(0, 0, 1)
+	if IsToday(tomorrow) {
+		t.Error("Tomorrow should not be today")
+	}
+
+	// Test with specific time in today
+	todayMorning := time.Date(now.Year(), now.Month(), now.Day(), 6, 0, 0, 0, now.Location())
+	if !IsToday(todayMorning) {
+		t.Error("This morning should be today")
+	}
+
+	todayEvening := time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 0, now.Location())
+	if !IsToday(todayEvening) {
+		t.Error("This evening should be today")
+	}
+}
+
+func TestIsWeekend(t *testing.T) {
+	// Saturday
+	saturday := time.Date(2023, 1, 7, 12, 0, 0, 0, time.UTC)
+	if !IsWeekend(saturday) {
+		t.Error("Saturday should be weekend")
+	}
+
+	// Sunday
+	sunday := time.Date(2023, 1, 8, 12, 0, 0, 0, time.UTC)
+	if !IsWeekend(sunday) {
+		t.Error("Sunday should be weekend")
+	}
+
+	// Monday
+	monday := time.Date(2023, 1, 9, 12, 0, 0, 0, time.UTC)
+	if IsWeekend(monday) {
+		t.Error("Monday should not be weekend")
+	}
+
+	// Wednesday
+	wednesday := time.Date(2023, 1, 11, 12, 0, 0, 0, time.UTC)
+	if IsWeekend(wednesday) {
+		t.Error("Wednesday should not be weekend")
+	}
+
+	// Friday
+	friday := time.Date(2023, 1, 13, 12, 0, 0, 0, time.UTC)
+	if IsWeekend(friday) {
+		t.Error("Friday should not be weekend")
+	}
+}
+
+func TestIsWeekday(t *testing.T) {
+	// Monday should be weekday
+	monday := time.Date(2023, 1, 9, 12, 0, 0, 0, time.UTC)
+	if !IsWeekday(monday) {
+		t.Error("Monday should be weekday")
+	}
+
+	// Saturday should not be weekday
+	saturday := time.Date(2023, 1, 7, 12, 0, 0, 0, time.UTC)
+	if IsWeekday(saturday) {
+		t.Error("Saturday should not be weekday")
+	}
+
+	// Sunday should not be weekday
+	sunday := time.Date(2023, 1, 8, 12, 0, 0, 0, time.UTC)
+	if IsWeekday(sunday) {
+		t.Error("Sunday should not be weekday")
+	}
+}
+
+func TestIsYesterday(t *testing.T) {
+	now := time.Now()
+	yesterday := now.AddDate(0, 0, -1)
+
+	if !IsYesterday(yesterday) {
+		t.Error("Yesterday should be yesterday")
+	}
+
+	if IsYesterday(now) {
+		t.Error("Today should not be yesterday")
+	}
+
+	tomorrow := now.AddDate(0, 0, 1)
+	if IsYesterday(tomorrow) {
+		t.Error("Tomorrow should not be yesterday")
+	}
+}
+
+func TestIsTomorrow(t *testing.T) {
+	now := time.Now()
+	tomorrow := now.AddDate(0, 0, 1)
+
+	if !IsTomorrow(tomorrow) {
+		t.Error("Tomorrow should be tomorrow")
+	}
+
+	if IsTomorrow(now) {
+		t.Error("Today should not be tomorrow")
+	}
+
+	yesterday := now.AddDate(0, 0, -1)
+	if IsTomorrow(yesterday) {
+		t.Error("Yesterday should not be tomorrow")
+	}
+}
+
+func TestIsSameWeek(t *testing.T) {
+	// Monday and Wednesday in same week
+	monday := time.Date(2023, 1, 9, 12, 0, 0, 0, time.UTC)
+	wednesday := time.Date(2023, 1, 11, 12, 0, 0, 0, time.UTC)
+
+	if !IsSameWeek(monday, wednesday) {
+		t.Error("Monday and Wednesday should be in same week")
+	}
+
+	// Monday and next Monday should not be in same week
+	nextMonday := time.Date(2023, 1, 16, 12, 0, 0, 0, time.UTC)
+	if IsSameWeek(monday, nextMonday) {
+		t.Error("Monday and next Monday should not be in same week")
+	}
+}
+
+func TestIsSameMonth(t *testing.T) {
+	// Same month, different days
+	date1 := time.Date(2023, 1, 5, 12, 0, 0, 0, time.UTC)
+	date2 := time.Date(2023, 1, 25, 12, 0, 0, 0, time.UTC)
+
+	if !IsSameMonth(date1, date2) {
+		t.Error("Same month dates should be in same month")
+	}
+
+	// Different months
+	date3 := time.Date(2023, 2, 5, 12, 0, 0, 0, time.UTC)
+	if IsSameMonth(date1, date3) {
+		t.Error("Different month dates should not be in same month")
+	}
+
+	// Different years, same month
+	date4 := time.Date(2024, 1, 5, 12, 0, 0, 0, time.UTC)
+	if IsSameMonth(date1, date4) {
+		t.Error("Different year dates should not be in same month")
+	}
+}
+
+func TestIsSameYear(t *testing.T) {
+	// Same year
+	date1 := time.Date(2023, 1, 5, 12, 0, 0, 0, time.UTC)
+	date2 := time.Date(2023, 12, 25, 12, 0, 0, 0, time.UTC)
+
+	if !IsSameYear(date1, date2) {
+		t.Error("Same year dates should be in same year")
+	}
+
+	// Different years
+	date3 := time.Date(2024, 1, 5, 12, 0, 0, 0, time.UTC)
+	if IsSameYear(date1, date3) {
+		t.Error("Different year dates should not be in same year")
+	}
+}
+
+func TestDaysUntil(t *testing.T) {
+	now := time.Now()
+	tomorrow := now.AddDate(0, 0, 1)
+	yesterday := now.AddDate(0, 0, -1)
+	nextWeek := now.AddDate(0, 0, 7)
+
+	if days := DaysUntil(tomorrow); days != 1 {
+		t.Errorf("Days until tomorrow should be 1, got %d", days)
+	}
+
+	if days := DaysUntil(yesterday); days != -1 {
+		t.Errorf("Days until yesterday should be -1, got %d", days)
+	}
+
+	if days := DaysUntil(nextWeek); days != 7 {
+		t.Errorf("Days until next week should be 7, got %d", days)
+	}
+}
+
+func TestDaysSince(t *testing.T) {
+	now := time.Now()
+	tomorrow := now.AddDate(0, 0, 1)
+	yesterday := now.AddDate(0, 0, -1)
+	lastWeek := now.AddDate(0, 0, -7)
+
+	if days := DaysSince(yesterday); days != 1 {
+		t.Errorf("Days since yesterday should be 1, got %d", days)
+	}
+
+	if days := DaysSince(tomorrow); days != -1 {
+		t.Errorf("Days since tomorrow should be -1, got %d", days)
+	}
+
+	if days := DaysSince(lastWeek); days != 7 {
+		t.Errorf("Days since last week should be 7, got %d", days)
+	}
+}
+
+func TestWeekdayFunctions(t *testing.T) {
+	assert := assertT(t)
+
+	// Test Tuesday function
+	n := time.Date(2023, 1, 10, 12, 0, 0, 0, time.UTC) // Tuesday
+	assert(With(n).Tuesday(), "2023-01-10 00:00:00", "Tuesday from Tuesday")
+	assert(With(n).Tuesday("15:30"), "2023-01-10 15:30:00", "Tuesday with time")
+
+	// Test Wednesday function
+	assert(With(n).Wednesday(), "2023-01-11 00:00:00", "Wednesday from Tuesday")
+	assert(With(n).Wednesday("09:15"), "2023-01-11 09:15:00", "Wednesday with time")
+
+	// Test Thursday function
+	assert(With(n).Thursday(), "2023-01-12 00:00:00", "Thursday from Tuesday")
+	assert(With(n).Thursday("14:45"), "2023-01-12 14:45:00", "Thursday with time")
+
+	// Test Friday function
+	assert(With(n).Friday(), "2023-01-13 00:00:00", "Friday from Tuesday")
+	assert(With(n).Friday("17:00"), "2023-01-13 17:00:00", "Friday with time")
+
+	// Test Saturday function
+	assert(With(n).Saturday(), "2023-01-14 00:00:00", "Saturday from Tuesday")
+	assert(With(n).Saturday("10:30"), "2023-01-14 10:30:00", "Saturday with time")
+}
+
+func TestFluentInterface(t *testing.T) {
+	assert := assertT(t)
+
+	n := time.Date(2023, 1, 15, 12, 0, 0, 0, time.UTC)
+	now := With(n)
+
+	// Test AddDays
+	assert(now.AddDays(1).Time, "2023-01-16 12:00:00", "AddDays(1)")
+	assert(now.AddDays(-1).Time, "2023-01-14 12:00:00", "AddDays(-1)")
+	assert(now.AddDays(7).Time, "2023-01-22 12:00:00", "AddDays(7)")
+
+	// Test AddWeeks
+	assert(now.AddWeeks(1).Time, "2023-01-22 12:00:00", "AddWeeks(1)")
+	assert(now.AddWeeks(-1).Time, "2023-01-08 12:00:00", "AddWeeks(-1)")
+
+	// Test AddMonths
+	assert(now.AddMonths(1).Time, "2023-02-15 12:00:00", "AddMonths(1)")
+	assert(now.AddMonths(-1).Time, "2022-12-15 12:00:00", "AddMonths(-1)")
+
+	// Test AddYears
+	assert(now.AddYears(1).Time, "2024-01-15 12:00:00", "AddYears(1)")
+	assert(now.AddYears(-1).Time, "2022-01-15 12:00:00", "AddYears(-1)")
+
+	// Test chaining
+	assert(now.AddDays(1).AddWeeks(1).Time, "2023-01-23 12:00:00", "AddDays(1).AddWeeks(1)")
+}
+
+func TestFormatMethods(t *testing.T) {
+	n := time.Date(2023, 1, 15, 14, 30, 45, 0, time.UTC)
+	now := With(n)
+
+	if date := now.FormatDate(); date != "2023-01-15" {
+		t.Errorf("FormatDate() = %s, want %s", date, "2023-01-15")
+	}
+
+	if timeStr := now.FormatTime(); timeStr != "14:30:45" {
+		t.Errorf("FormatTime() = %s, want %s", timeStr, "14:30:45")
+	}
+
+	if dateTime := now.FormatDateTime(); dateTime != "2023-01-15 14:30:45" {
+		t.Errorf("FormatDateTime() = %s, want %s", dateTime, "2023-01-15 14:30:45")
+	}
+
+	if us := now.FormatUS(); us != "01/15/2023" {
+		t.Errorf("FormatUS() = %s, want %s", us, "01/15/2023")
+	}
+
+	if european := now.FormatEuropean(); european != "15/01/2023" {
+		t.Errorf("FormatEuropean() = %s, want %s", european, "15/01/2023")
+	}
+}
+
+func TestTimestampToday(t *testing.T) {
+	now := time.Now()
+
+	// Test Unix timestamp (seconds)
+	timestamp := float64(now.Unix())
+	if !IsTimestampToday(timestamp) {
+		t.Error("Current Unix timestamp should be today")
+	}
+
+	// Test millisecond timestamp
+	millisecondTimestamp := float64(now.UnixNano() / 1e6)
+	if !IsMillisecondTimestampToday(millisecondTimestamp) {
+		t.Error("Current millisecond timestamp should be today")
+	}
+
+	// Test yesterday timestamp
+	yesterday := now.AddDate(0, 0, -1)
+	yesterdayTimestamp := float64(yesterday.Unix())
+	if IsTimestampToday(yesterdayTimestamp) {
+		t.Error("Yesterday timestamp should not be today")
+	}
+}
+
+func TestAdditionalParseFormats(t *testing.T) {
+	assert := assertT(t)
+	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.UTC)
 
 	TimeFormats = append(TimeFormats, "2006-01-02 15:04:05.000000")
 	assert(With(n).MustParse("2010-01-01 07:24:23.131384"), "2010-01-01 07:24:23.131384", "Parse 2010-01-01 07:24:23.131384")

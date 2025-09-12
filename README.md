@@ -66,15 +66,26 @@ myConfig.Parse("2002-10-12 22:14:01")     // 2002-10-12 22:14:01
 myConfig.Parse("2002-10-12 22:14")        // returns error 'can't parse string as time: 2002-10-12 22:14'
 ```
 
-### Monday/Sunday
+### Weekdays
 
-Don't be bothered with the `WeekStartDay` setting, you can use `Monday`, `Sunday`
+Don't be bothered with the `WeekStartDay` setting, you can use specific weekday functions
 
 ```go
+// All weekdays are available
 now.Monday()              // 2013-11-18 00:00:00 Mon
-now.Monday("17:44")       // 2013-11-18 17:44:00 Mon
+now.Tuesday()             // 2013-11-19 00:00:00 Tue
+now.Wednesday()           // 2013-11-20 00:00:00 Wed
+now.Thursday()            // 2013-11-21 00:00:00 Thu
+now.Friday()              // 2013-11-22 00:00:00 Fri
+now.Saturday()            // 2013-11-23 00:00:00 Sat
 now.Sunday()              // 2013-11-24 00:00:00 Sun (Next Sunday)
+
+// All functions support time specification
+now.Monday("17:44")       // 2013-11-18 17:44:00 Mon
+now.Tuesday("09:15")      // 2013-11-19 09:15:00 Tue
+now.Friday("17:00")       // 2013-11-22 17:00:00 Fri
 now.Sunday("18:19:24")    // 2013-11-24 18:19:24 Sun (Next Sunday)
+
 now.EndOfSunday()         // 2013-11-24 23:59:59.999999999 Sun (End of next Sunday)
 
 t := time.Date(2013, 11, 24, 17, 51, 49, 123456789, time.Now().Location()) // 2013-11-24 17:51:49.123456789 Sun
@@ -116,6 +127,77 @@ Extend `now` to support more formats is quite easy, just update `now.TimeFormats
 
 ```go
 now.TimeFormats = append(now.TimeFormats, "02 Jan 2006 15:04")
+```
+
+### Time Checking Functions
+
+```go
+// Check if time is today, yesterday, tomorrow
+now.IsToday(time.Now())                    // true
+now.IsYesterday(time.Now().AddDate(0,0,-1)) // true
+now.IsTomorrow(time.Now().AddDate(0,0,1))  // true
+
+// Check weekend/weekday
+now.IsWeekend(time.Now())    // true if Saturday or Sunday
+now.IsWeekday(time.Now())    // true if Monday through Friday
+
+// Check if times are in same period
+t1 := time.Date(2023, 1, 15, 10, 0, 0, 0, time.UTC)
+t2 := time.Date(2023, 1, 17, 14, 0, 0, 0, time.UTC)
+now.IsSameWeek(t1, t2)   // true
+now.IsSameMonth(t1, t2)  // true
+now.IsSameYear(t1, t2)   // true
+
+// Check timestamps
+now.IsTimestampToday(float64(time.Now().Unix()))           // Unix timestamp (10 digits)
+now.IsMillisecondTimestampToday(float64(time.Now().UnixNano()/1e6)) // Millisecond timestamp (13 digits)
+```
+
+### Time Calculations
+
+```go
+// Calculate time differences
+target := time.Now().AddDate(0, 0, 5)
+now.DaysUntil(target)   // 5
+now.WeeksUntil(target)  // 0
+now.MonthsUntil(target) // 0
+
+past := time.Now().AddDate(0, 0, -10)
+now.DaysSince(past)   // 10
+now.WeeksSince(past)  // 1
+now.MonthsSince(past) // 0
+```
+
+### Fluent Interface
+
+```go
+// Chain time operations
+t := time.Date(2023, 1, 15, 12, 0, 0, 0, time.UTC)
+n := now.With(t)
+
+n.AddDays(1).AddWeeks(2).FormatDate()     // "2023-02-01"
+n.AddMonths(1).AddYears(1).FormatDateTime() // "2024-02-15 12:00:00"
+
+// Fluent addition methods
+n.Add(time.Hour * 2)    // Add duration
+n.AddDays(5)           // Add days
+n.AddWeeks(2)          // Add weeks
+n.AddMonths(3)         // Add months
+n.AddYears(1)          // Add years
+```
+
+### Format Convenience Methods
+
+```go
+t := time.Date(2023, 1, 15, 14, 30, 45, 0, time.UTC)
+n := now.With(t)
+
+n.FormatDate()      // "2023-01-15"
+n.FormatTime()      // "14:30:45"
+n.FormatDateTime()  // "2023-01-15 14:30:45"
+n.FormatISO8601()   // "2023-01-15T14:30:45Z"
+n.FormatUS()        // "01/15/2023"
+n.FormatEuropean()  // "15/01/2023"
 ```
 
 Please send me pull requests if you want a format to be supported officially

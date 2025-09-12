@@ -11,6 +11,16 @@ package now
 
 import "time"
 
+// Common date format constants
+const (
+	DateFormat     = "2006-01-02"
+	TimeFormat     = "15:04:05"
+	DateTimeFormat = "2006-01-02 15:04:05"
+	ISO8601Format  = "2006-01-02T15:04:05Z07:00"
+	USFormat       = "01/02/2006"
+	EuropeanFormat = "02/01/2006"
+)
+
 // WeekStartDay set week start day, default is sunday
 var WeekStartDay = time.Sunday
 
@@ -156,6 +166,31 @@ func EndOfYear() time.Time {
 // Monday returns the time.Time value of Monday
 func Monday(strs ...string) time.Time {
 	return With(time.Now()).Monday(strs...)
+}
+
+// Tuesday returns the time.Time value of Tuesday
+func Tuesday(strs ...string) time.Time {
+	return With(time.Now()).Tuesday(strs...)
+}
+
+// Wednesday returns the time.Time value of Wednesday
+func Wednesday(strs ...string) time.Time {
+	return With(time.Now()).Wednesday(strs...)
+}
+
+// Thursday returns the time.Time value of Thursday
+func Thursday(strs ...string) time.Time {
+	return With(time.Now()).Thursday(strs...)
+}
+
+// Friday returns the time.Time value of Friday
+func Friday(strs ...string) time.Time {
+	return With(time.Now()).Friday(strs...)
+}
+
+// Saturday returns the time.Time value of Saturday
+func Saturday(strs ...string) time.Time {
+	return With(time.Now()).Saturday(strs...)
 }
 
 // Sunday returns the time.Time value of Sunday
