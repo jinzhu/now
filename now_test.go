@@ -412,6 +412,42 @@ func TestQuarter(t *testing.T) {
 	}
 }
 
+func TestIsWeekendAndIsWeekday(t *testing.T) {
+	type test struct {
+		name            string
+		givenDate       time.Time
+		expectedWeekend bool
+	}
+
+	tests := []test{
+		{"Monday", time.Date(2024, 1, 1, 12, 0, 0, 0, time.UTC), false},
+		{"Tuesday", time.Date(2024, 1, 2, 12, 0, 0, 0, time.UTC), false},
+		{"Wednesday", time.Date(2024, 1, 3, 12, 0, 0, 0, time.UTC), false},
+		{"Thursday", time.Date(2024, 1, 4, 12, 0, 0, 0, time.UTC), false},
+		{"Friday", time.Date(2024, 1, 5, 12, 0, 0, 0, time.UTC), false},
+		{"Saturday", time.Date(2024, 1, 6, 12, 0, 0, 0, time.UTC), true},
+		{"Sunday", time.Date(2024, 1, 7, 12, 0, 0, 0, time.UTC), true},
+		{"Friday 23:59:59", time.Date(2024, 1, 5, 23, 59, 59, 0, time.UTC), false},
+		{"Saturday 00:00:00", time.Date(2024, 1, 6, 0, 0, 0, 0, time.UTC), true},
+		{"Sunday 23:59:59", time.Date(2024, 1, 7, 23, 59, 59, 0, time.UTC), true},
+		{"Monday 00:00:00", time.Date(2024, 1, 8, 0, 0, 0, 0, time.UTC), false},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			gotWeekend := With(tc.givenDate).IsWeekend()
+			gotWeekday := With(tc.givenDate).IsWeekday()
+
+			if gotWeekend != tc.expectedWeekend {
+				t.Errorf("IsWeekend() for %v: expected %v, got %v", tc.name, tc.expectedWeekend, gotWeekend)
+			}
+			if gotWeekday != !tc.expectedWeekend {
+				t.Errorf("IsWeekday() for %v: expected %v, got %v", tc.name, !tc.expectedWeekend, gotWeekday)
+			}
+		})
+	}
+}
+
 func Example() {
 	time.Now() // 2013-11-18 17:51:49.123456789 Mon
 

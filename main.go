@@ -2,11 +2,11 @@
 //
 // More details README here: https://github.com/jinzhu/now
 //
-//  import "github.com/jinzhu/now"
+//	import "github.com/jinzhu/now"
 //
-//  now.BeginningOfMinute() // 2013-11-18 17:51:00 Mon
-//  now.BeginningOfDay()    // 2013-11-18 00:00:00 Mon
-//  now.EndOfDay()          // 2013-11-18 23:59:59.999999999 Mon
+//	now.BeginningOfMinute() // 2013-11-18 17:51:00 Mon
+//	now.BeginningOfDay()    // 2013-11-18 00:00:00 Mon
+//	now.EndOfDay()          // 2013-11-18 23:59:59.999999999 Mon
 package now
 
 import "time"
@@ -171,6 +171,16 @@ func EndOfSunday() time.Time {
 // Quarter returns the yearly quarter
 func Quarter() uint {
 	return With(time.Now()).Quarter()
+}
+
+// IsWeekend returns true if current time is Saturday or Sunday
+func IsWeekend() bool {
+	return With(time.Now()).IsWeekend()
+}
+
+// IsWeekday returns true if current time is Monday to Friday
+func IsWeekday() bool {
+	return With(time.Now()).IsWeekday()
 }
 
 // Parse parse string to time
