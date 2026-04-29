@@ -167,6 +167,17 @@ func (now *Now) Quarter() uint {
 	return (uint(now.Month())-1)/3 + 1
 }
 
+// IsWeekend returns true if the time is Saturday or Sunday
+func (now *Now) IsWeekend() bool {
+	weekday := now.Weekday()
+	return weekday == time.Saturday || weekday == time.Sunday
+}
+
+// IsWeekday returns true if the time is Monday to Friday
+func (now *Now) IsWeekday() bool {
+	return !now.IsWeekend()
+}
+
 func (now *Now) parseWithFormat(str string, location *time.Location) (t time.Time, err error) {
 	for _, format := range now.TimeFormats {
 		t, err = time.ParseInLocation(format, str, location)
