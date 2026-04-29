@@ -113,6 +113,11 @@ func BeginningOfQuarter() time.Time {
 	return With(time.Now()).BeginningOfQuarter()
 }
 
+// StartOfQuarter returns the first day of the quarter at 00:00:00
+func StartOfQuarter() time.Time {
+	return With(time.Now()).StartOfQuarter()
+}
+
 // BeginningOfYear beginning of year
 func BeginningOfYear() time.Time {
 	return With(time.Now()).BeginningOfYear()

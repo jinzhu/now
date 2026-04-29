@@ -447,3 +447,96 @@ func Example() {
 	Sunday("17:44") // 2013-11-24 17:44:00 Sun
 	EndOfSunday()   // 2013-11-24 23:59:59.999999999 Sun
 }
+
+func TestStartOfQuarterAndEndOfQuarter(t *testing.T) {
+	type testCase struct {
+		name               string
+		input              time.Time
+		expectedStart      time.Time
+		expectedEnd        time.Time
+	}
+
+	tests := []testCase{
+		{
+			name:          "Q1 first day",
+			input:         time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC),
+			expectedStart: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC),
+			expectedEnd:   time.Date(2024, 3, 31, 23, 59, 59, 999999999, time.UTC),
+		},
+		{
+			name:          "Q1 mid",
+			input:         time.Date(2024, 2, 15, 12, 0, 0, 0, time.UTC),
+			expectedStart: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC),
+			expectedEnd:   time.Date(2024, 3, 31, 23, 59, 59, 999999999, time.UTC),
+		},
+		{
+			name:          "Q1 last day",
+			input:         time.Date(2024, 3, 31, 23, 59, 59, 999999999, time.UTC),
+			expectedStart: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC),
+			expectedEnd:   time.Date(2024, 3, 31, 23, 59, 59, 999999999, time.UTC),
+		},
+		{
+			name:          "Q2 first day",
+			input:         time.Date(2024, 4, 1, 0, 0, 0, 0, time.UTC),
+			expectedStart: time.Date(2024, 4, 1, 0, 0, 0, 0, time.UTC),
+			expectedEnd:   time.Date(2024, 6, 30, 23, 59, 59, 999999999, time.UTC),
+		},
+		{
+			name:          "Q2 mid",
+			input:         time.Date(2024, 5, 15, 8, 30, 0, 0, time.UTC),
+			expectedStart: time.Date(2024, 4, 1, 0, 0, 0, 0, time.UTC),
+			expectedEnd:   time.Date(2024, 6, 30, 23, 59, 59, 999999999, time.UTC),
+		},
+		{
+			name:          "Q2 last day",
+			input:         time.Date(2024, 6, 30, 23, 59, 59, 999999999, time.UTC),
+			expectedStart: time.Date(2024, 4, 1, 0, 0, 0, 0, time.UTC),
+			expectedEnd:   time.Date(2024, 6, 30, 23, 59, 59, 999999999, time.UTC),
+		},
+		{
+			name:          "Q3 first day",
+			input:         time.Date(2024, 7, 1, 0, 0, 0, 0, time.UTC),
+			expectedStart: time.Date(2024, 7, 1, 0, 0, 0, 0, time.UTC),
+			expectedEnd:   time.Date(2024, 9, 30, 23, 59, 59, 999999999, time.UTC),
+		},
+		{
+			name:          "Q3 mid",
+			input:         time.Date(2024, 8, 15, 0, 0, 0, 0, time.UTC),
+			expectedStart: time.Date(2024, 7, 1, 0, 0, 0, 0, time.UTC),
+			expectedEnd:   time.Date(2024, 9, 30, 23, 59, 59, 999999999, time.UTC),
+		},
+		{
+			name:          "Q4 first day",
+			input:         time.Date(2024, 10, 1, 0, 0, 0, 0, time.UTC),
+			expectedStart: time.Date(2024, 10, 1, 0, 0, 0, 0, time.UTC),
+			expectedEnd:   time.Date(2024, 12, 31, 23, 59, 59, 999999999, time.UTC),
+		},
+		{
+			name:          "Q4 mid",
+			input:         time.Date(2024, 11, 15, 0, 0, 0, 0, time.UTC),
+			expectedStart: time.Date(2024, 10, 1, 0, 0, 0, 0, time.UTC),
+			expectedEnd:   time.Date(2024, 12, 31, 23, 59, 59, 999999999, time.UTC),
+		},
+		{
+			name:          "Q4 last day",
+			input:         time.Date(2024, 12, 31, 23, 59, 59, 999999999, time.UTC),
+			expectedStart: time.Date(2024, 10, 1, 0, 0, 0, 0, time.UTC),
+			expectedEnd:   time.Date(2024, 12, 31, 23, 59, 59, 999999999, time.UTC),
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			n := With(tc.input)
+			if got := n.StartOfQuarter(); !got.Equal(tc.expectedStart) {
+				t.Errorf("StartOfQuarter() = %v, want %v", got, tc.expectedStart)
+			}
+			if got := n.BeginningOfQuarter(); !got.Equal(tc.expectedStart) {
+				t.Errorf("BeginningOfQuarter() = %v, want %v", got, tc.expectedStart)
+			}
+			if got := n.EndOfQuarter(); !got.Equal(tc.expectedEnd) {
+				t.Errorf("EndOfQuarter() = %v, want %v", got, tc.expectedEnd)
+			}
+		})
+	}
+}
