@@ -167,6 +167,14 @@ func (now *Now) Quarter() uint {
 	return (uint(now.Month())-1)/3 + 1
 }
 
+// WeekNumber returns the ISO 8601 week number of the year
+// ISO 8601: week 1 is the week containing the first Thursday of the year,
+// and Monday is the first day of the week
+func (now *Now) WeekNumber() int {
+	_, week := now.ISOWeek()
+	return week
+}
+
 func (now *Now) parseWithFormat(str string, location *time.Location) (t time.Time, err error) {
 	for _, format := range now.TimeFormats {
 		t, err = time.ParseInLocation(format, str, location)
