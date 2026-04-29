@@ -447,3 +447,43 @@ func Example() {
 	Sunday("17:44") // 2013-11-24 17:44:00 Sun
 	EndOfSunday()   // 2013-11-24 23:59:59.999999999 Sun
 }
+
+func TestWeekNumber(t *testing.T) {
+	type testCase struct {
+		name     string
+		input    time.Time
+		expected int
+	}
+
+	tests := []testCase{
+		// Year-start: Jan 1 belongs to previous year's last week when it's not Monday-Thursday
+		{"2023-01-01 Sunday belongs to week 52 of 2022", time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC), 52},
+		{"2023-01-02 Monday is week 1 of 2023", time.Date(2023, 1, 2, 0, 0, 0, 0, time.UTC), 1},
+		{"2024-01-01 Monday is week 1 of 2024", time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC), 1},
+
+		// Year-end: Dec 28+ may belong to week 1 of next year
+		{"2023-12-25 Monday is week 52", time.Date(2023, 12, 25, 0, 0, 0, 0, time.UTC), 52},
+		{"2023-12-31 Sunday is week 52", time.Date(2023, 12, 31, 0, 0, 0, 0, time.UTC), 52},
+		{"2024-12-30 Monday belongs to week 1 of 2025", time.Date(2024, 12, 30, 0, 0, 0, 0, time.UTC), 1},
+		{"2024-12-31 Tuesday belongs to week 1 of 2025", time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC), 1},
+
+		// Mid-year ordinary weeks
+		{"2023-06-15 is week 24", time.Date(2023, 6, 15, 0, 0, 0, 0, time.UTC), 24},
+		{"2024-07-15 is week 29", time.Date(2024, 7, 15, 0, 0, 0, 0, time.UTC), 29},
+
+		// 53-week year (2020 has 53 ISO weeks)
+		{"2020-12-28 Monday is week 53", time.Date(2020, 12, 28, 0, 0, 0, 0, time.UTC), 53},
+		{"2020-12-31 Thursday is week 53", time.Date(2020, 12, 31, 0, 0, 0, 0, time.UTC), 53},
+		{"2021-01-03 Sunday belongs to week 53 of 2020", time.Date(2021, 1, 3, 0, 0, 0, 0, time.UTC), 53},
+		{"2021-01-04 Monday is week 1 of 2021", time.Date(2021, 1, 4, 0, 0, 0, 0, time.UTC), 1},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got := With(tc.input).WeekNumber()
+			if got != tc.expected {
+				t.Errorf("WeekNumber() = %d, want %d (input: %s)", got, tc.expected, tc.input.Format("2006-01-02 Mon"))
+			}
+		})
+	}
+}
