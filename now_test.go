@@ -367,6 +367,22 @@ func TestBetween(t *testing.T) {
 	}
 }
 
+func TestPackageLevelHalf(t *testing.T) {
+	// Package-level BeginningOfHalf/EndOfHalf should match the method forms
+	// for the current time (same pattern as BeginningOfQuarter/EndOfQuarter).
+	gotBegin := BeginningOfHalf()
+	wantBegin := With(time.Now()).BeginningOfHalf()
+	if !gotBegin.Equal(wantBegin) {
+		t.Errorf("BeginningOfHalf() = %v, want %v", gotBegin, wantBegin)
+	}
+
+	gotEnd := EndOfHalf()
+	wantEnd := With(time.Now()).EndOfHalf()
+	if !gotEnd.Equal(wantEnd) {
+		t.Errorf("EndOfHalf() = %v, want %v", gotEnd, wantEnd)
+	}
+}
+
 func TestConfig(t *testing.T) {
 	assert := assertT(t)
 

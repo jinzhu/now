@@ -60,7 +60,7 @@ func (now *Now) BeginningOfHalf() time.Time {
 	return month.AddDate(0, -offset, 0)
 }
 
-// BeginningOfYear BeginningOfYear beginning of year
+// BeginningOfYear beginning of year
 func (now *Now) BeginningOfYear() time.Time {
 	y, _, _ := now.Date()
 	return time.Date(y, time.January, 1, 0, 0, 0, 0, now.Location())
@@ -239,7 +239,7 @@ func (now *Now) MustParse(strs ...string) (t time.Time) {
 	return t
 }
 
-// Between check time between the begin, end time or not
+// Between reports whether now is strictly after begin and strictly before end.
 func (now *Now) Between(begin, end string) bool {
 	beginTime := now.MustParse(begin)
 	endTime := now.MustParse(end)

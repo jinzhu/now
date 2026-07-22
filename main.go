@@ -113,6 +113,11 @@ func BeginningOfQuarter() time.Time {
 	return With(time.Now()).BeginningOfQuarter()
 }
 
+// BeginningOfHalf beginning of half year
+func BeginningOfHalf() time.Time {
+	return With(time.Now()).BeginningOfHalf()
+}
+
 // BeginningOfYear beginning of year
 func BeginningOfYear() time.Time {
 	return With(time.Now()).BeginningOfYear()
@@ -146,6 +151,11 @@ func EndOfMonth() time.Time {
 // EndOfQuarter end of quarter
 func EndOfQuarter() time.Time {
 	return With(time.Now()).EndOfQuarter()
+}
+
+// EndOfHalf end of half year
+func EndOfHalf() time.Time {
+	return With(time.Now()).EndOfHalf()
 }
 
 // EndOfYear end of year
@@ -193,7 +203,7 @@ func MustParseInLocation(loc *time.Location, strs ...string) time.Time {
 	return With(time.Now().In(loc)).MustParse(strs...)
 }
 
-// Between check now between the begin, end time or not
+// Between reports whether now is strictly after time1 and strictly before time2.
 func Between(time1, time2 string) bool {
 	return With(time.Now()).Between(time1, time2)
 }
