@@ -38,25 +38,33 @@ var DefaultConfig *Config
 
 // With initializes Now based on configuration
 func (config *Config) With(t time.Time) *Now {
+	if config == nil {
+		// Fall back to package defaults instead of panicking on a nil *Config.
+		return With(t)
+	}
 	return &Now{Time: t, Config: config}
 }
 
 // Parse parses string to time based on configuration
 func (config *Config) Parse(strs ...string) (time.Time, error) {
+	if config == nil {
+		return With(time.Now()).Parse(strs...)
+	}
 	if config.TimeLocation == nil {
 		return config.With(time.Now()).Parse(strs...)
-	} else {
-		return config.With(time.Now().In(config.TimeLocation)).Parse(strs...)
 	}
+	return config.With(time.Now().In(config.TimeLocation)).Parse(strs...)
 }
 
 // MustParse must parse string to time or will panic
 func (config *Config) MustParse(strs ...string) time.Time {
+	if config == nil {
+		return With(time.Now()).MustParse(strs...)
+	}
 	if config.TimeLocation == nil {
 		return config.With(time.Now()).MustParse(strs...)
-	} else {
-		return config.With(time.Now().In(config.TimeLocation)).MustParse(strs...)
 	}
+	return config.With(time.Now().In(config.TimeLocation)).MustParse(strs...)
 }
 
 // Now now struct
