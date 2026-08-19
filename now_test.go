@@ -359,13 +359,30 @@ func TestParse(t *testing.T) {
 func TestBetween(t *testing.T) {
 	tm := time.Date(2015, 06, 30, 17, 51, 49, 123456789, time.Now().Location())
 	if !With(tm).Between("23:28:9 Dec 19, 2013 PST", "23:28:9 Dec 19, 2015 PST") {
-		t.Errorf("Between")
+		t.Errorf("Between should be true for valid range")
 	}
 
 	if !With(tm).Between("2015-05-12 12:20", "2015-06-30 17:51:50") {
-		t.Errorf("Between")
+		t.Errorf("Between should be true for valid range")
+	}
+
+	if With(tm).Between("2015-07-01 00:00", "2015-08-01 00:00") {
+		t.Errorf("Between should be false when time is before begin")
+	}
+
+	if With(tm).Between("2014-01-01 00:00", "2015-01-01 00:00") {
+		t.Errorf("Between should be false when time is after end")
+	}
+
+	if With(tm).Between("2015-06-30 17:51:49.123456789", "2015-07-01 00:00") {
+		t.Errorf("Between should be false when time is equal to begin")
+	}
+
+	if !Between("2000-01-01", "3000-01-01") {
+		t.Errorf("Package Between should be true for current time in wide range")
 	}
 }
+
 
 func TestConfig(t *testing.T) {
 	assert := assertT(t)
