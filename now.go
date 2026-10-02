@@ -8,7 +8,14 @@ import (
 
 // BeginningOfMinute beginning of minute
 func (now *Now) BeginningOfMinute() time.Time {
-	return now.Add(-time.Duration(now.Second()) * time.Second).Truncate(time.Second)
+	t := now.Add(-time.Duration(now.Second()) * time.Second).Truncate(time.Second)
+	_, currentOffset := now.Zone()
+	_, boundaryOffset := t.Zone()
+	if currentOffset != boundaryOffset {
+		// Preserve the existing boundary for a partial minute at an offset transition.
+		return now.Truncate(time.Minute)
+	}
+	return t
 }
 
 // BeginningOfHour beginning of hour

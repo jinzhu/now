@@ -21,6 +21,10 @@ func TestMinuteBoundariesInLocation(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	algiers, err := time.LoadLocation("Africa/Algiers")
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, test := range []struct {
 		name  string
 		input time.Time
@@ -34,6 +38,8 @@ func TestMinuteBoundariesInLocation(t *testing.T) {
 		{"whole_minute_offset", time.Date(2026, 1, 2, 12, 34, 49, 123456789, time.FixedZone("minutes", 20700)), time.Date(2026, 1, 2, 12, 34, 0, 0, time.FixedZone("minutes", 20700))},
 		{"first_repeated_minute", time.Date(2026, 11, 1, 5, 34, 49, 123456789, time.UTC).In(newYork), time.Date(2026, 11, 1, 5, 34, 0, 0, time.UTC).In(newYork)},
 		{"second_repeated_minute", time.Date(2026, 11, 1, 6, 34, 49, 123456789, time.UTC).In(newYork), time.Date(2026, 11, 1, 6, 34, 0, 0, time.UTC).In(newYork)},
+		{"partial_minute_initial_seconds", time.Date(1891, 3, 15, 23, 47, 54, 123456789, time.UTC).In(algiers), time.Date(1891, 3, 15, 23, 47, 0, 0, time.UTC).In(algiers)},
+		{"partial_minute_after_seconds_transition", time.Date(1891, 3, 15, 23, 48, 22, 123456789, time.UTC).In(algiers), time.Date(1891, 3, 15, 23, 48, 0, 0, time.UTC).In(algiers)},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			n := New(test.input)
