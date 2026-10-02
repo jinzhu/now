@@ -12,6 +12,48 @@ var (
 	timeCaracas     time.Time
 )
 
+func TestMinuteBoundariesInLocation(t *testing.T) {
+	kathmandu, err := time.LoadLocation("Asia/Kathmandu")
+	if err != nil {
+		t.Fatal(err)
+	}
+	newYork, err := time.LoadLocation("America/New_York")
+	if err != nil {
+		t.Fatal(err)
+	}
+	algiers, err := time.LoadLocation("Africa/Algiers")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, test := range []struct {
+		name  string
+		input time.Time
+		begin time.Time
+	}{
+		{"positive_seconds", time.Date(2026, 1, 2, 12, 34, 49, 123456789, time.FixedZone("seconds", 20776)), time.Date(2026, 1, 2, 12, 34, 0, 0, time.FixedZone("seconds", 20776))},
+		{"negative_seconds", time.Date(2026, 1, 2, 0, 0, 1, 1, time.FixedZone("seconds", -17762)), time.Date(2026, 1, 2, 0, 0, 0, 0, time.FixedZone("seconds", -17762))},
+		{"historical_kathmandu", time.Date(1900, 1, 2, 12, 34, 49, 123456789, kathmandu), time.Date(1900, 1, 2, 12, 34, 0, 0, kathmandu)},
+		{"already_beginning", time.Date(2026, 1, 2, 12, 34, 0, 0, time.FixedZone("seconds", 16)), time.Date(2026, 1, 2, 12, 34, 0, 0, time.FixedZone("seconds", 16))},
+		{"utc", time.Date(2026, 1, 2, 12, 34, 49, 123456789, time.UTC), time.Date(2026, 1, 2, 12, 34, 0, 0, time.UTC)},
+		{"whole_minute_offset", time.Date(2026, 1, 2, 12, 34, 49, 123456789, time.FixedZone("minutes", 20700)), time.Date(2026, 1, 2, 12, 34, 0, 0, time.FixedZone("minutes", 20700))},
+		{"first_repeated_minute", time.Date(2026, 11, 1, 5, 34, 49, 123456789, time.UTC).In(newYork), time.Date(2026, 11, 1, 5, 34, 0, 0, time.UTC).In(newYork)},
+		{"second_repeated_minute", time.Date(2026, 11, 1, 6, 34, 49, 123456789, time.UTC).In(newYork), time.Date(2026, 11, 1, 6, 34, 0, 0, time.UTC).In(newYork)},
+		{"partial_minute_initial_seconds", time.Date(1891, 3, 15, 23, 47, 54, 123456789, time.UTC).In(algiers), time.Date(1891, 3, 15, 23, 47, 0, 0, time.UTC).In(algiers)},
+		{"partial_minute_after_seconds_transition", time.Date(1891, 3, 15, 23, 48, 22, 123456789, time.UTC).In(algiers), time.Date(1891, 3, 15, 23, 48, 0, 0, time.UTC).In(algiers)},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			n := New(test.input)
+			if got := n.BeginningOfMinute(); !got.Equal(test.begin) || got.Location() != test.input.Location() {
+				t.Errorf("BeginningOfMinute = %v; want %v in original location", got, test.begin)
+			}
+			end := test.begin.Add(time.Minute - time.Nanosecond)
+			if got := n.EndOfMinute(); !got.Equal(end) || got.Location() != test.input.Location() {
+				t.Errorf("EndOfMinute = %v; want %v in original location", got, end)
+			}
+		})
+	}
+}
+
 func init() {
 	var err error
 	if locationCaracas, err = time.LoadLocation("America/Caracas"); err != nil {
