@@ -125,6 +125,24 @@ func TestBeginningOf(t *testing.T) {
 	assert(With(timeCaracas).BeginningOfYear(), "2016-01-01 00:00:00", "BeginningOfYear Caracas")
 }
 
+func TestBeginningOfDaySkippedMidnight(t *testing.T) {
+	assert := assertT(t)
+	loc, err := time.LoadLocation("America/Sao_Paulo")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Clocks jumped from 23:59 to 01:00, so local midnight did not exist.
+	in := time.Date(2018, 11, 4, 12, 0, 0, 0, loc)
+	got := With(in).BeginningOfDay()
+	assert(got, "2018-11-04 01:00:00", "BeginningOfDay when local midnight is skipped")
+	prev := got.Add(-time.Second)
+	if prev.Year() == 2018 && prev.Month() == time.November && prev.Day() == 4 {
+		t.Errorf("BeginningOfDay %v is not the first instant of the day", got)
+	}
+	ordinary := time.Date(2018, 11, 5, 15, 4, 5, 0, loc)
+	assert(With(ordinary).BeginningOfDay(), "2018-11-05 00:00:00", "BeginningOfDay ordinary day in the same zone")
+}
+
 func TestEndOf(t *testing.T) {
 	assert := assertT(t)
 

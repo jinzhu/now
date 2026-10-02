@@ -20,7 +20,16 @@ func (now *Now) BeginningOfHour() time.Time {
 // BeginningOfDay beginning of day
 func (now *Now) BeginningOfDay() time.Time {
 	y, m, d := now.Date()
-	return time.Date(y, m, d, 0, 0, 0, 0, now.Time.Location())
+	loc := now.Location()
+	t := time.Date(y, m, d, 0, 0, 0, 0, loc)
+	// A daylight-saving spring forward can skip local midnight. time.Date
+	// then lands on the previous day. Step forward to the first instant
+	// that still has this date.
+	limit := t.Add(48 * time.Hour)
+	for (t.Year() != y || t.Month() != m || t.Day() != d) && t.Before(limit) {
+		t = t.Add(time.Second)
+	}
+	return t
 }
 
 // BeginningOfWeek beginning of week
