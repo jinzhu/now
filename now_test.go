@@ -196,6 +196,13 @@ func TestEndOf(t *testing.T) {
 
 	n2 := time.Date(1900, 02, 18, 17, 51, 49, 123456789, time.UTC)
 	assert(With(n2).EndOfMonth(), "1900-02-28 23:59:59.999999999", "EndOfMonth")
+
+	dstSpringForwardEndOfDay := time.Date(2017, 3, 26, 12, 0, 0, 0, locationBerlin)
+	assert(With(dstSpringForwardEndOfDay).EndOfDay(), "2017-03-26 23:59:59.999999999", "EndOfDay DST Spring Forward")
+
+	leapDay := time.Date(2024, 2, 29, 12, 0, 0, 0, time.UTC)
+	assert(With(leapDay).EndOfDay(), "2024-02-29 23:59:59.999999999", "EndOfDay leap day")
+	assert(With(leapDay).EndOfMonth(), "2024-02-29 23:59:59.999999999", "EndOfMonth leap day")
 }
 
 func TestMondayAndSunday(t *testing.T) {
@@ -409,6 +416,136 @@ func TestQuarter(t *testing.T) {
 		if got != tc.expectedQuarter {
 			t.Fatalf("Quarter %d expected, got %d", tc.expectedQuarter, got)
 		}
+	}
+}
+
+func TestEndOfNanosecondPrecision(t *testing.T) {
+	testTimes := []time.Time{
+		time.Date(2024, 1, 15, 10, 20, 30, 123456789, time.UTC),
+		time.Date(2024, 2, 29, 23, 58, 59, 999999000, time.UTC),
+		time.Date(2023, 2, 28, 0, 0, 0, 0, time.UTC),
+		time.Date(2023, 12, 31, 23, 59, 58, 0, time.UTC),
+		time.Date(2017, 10, 29, 2, 30, 0, 0, locationBerlin),
+		time.Date(2017, 3, 26, 3, 30, 0, 0, locationBerlin),
+		time.Date(2016, 1, 1, 12, 10, 30, 500, locationCaracas),
+	}
+
+	for _, baseTime := range testTimes {
+		nowObj := With(baseTime)
+
+		cases := []struct {
+			name string
+			end  time.Time
+		}{
+			{"EndOfMinute", nowObj.EndOfMinute()},
+			{"EndOfHour", nowObj.EndOfHour()},
+			{"EndOfDay", nowObj.EndOfDay()},
+			{"EndOfWeek", nowObj.EndOfWeek()},
+			{"EndOfMonth", nowObj.EndOfMonth()},
+			{"EndOfQuarter", nowObj.EndOfQuarter()},
+			{"EndOfHalf", nowObj.EndOfHalf()},
+			{"EndOfYear", nowObj.EndOfYear()},
+			{"EndOfSunday", nowObj.EndOfSunday()},
+		}
+
+		for _, tc := range cases {
+			if tc.end.Nanosecond() != 999999999 {
+				t.Errorf("%s for %v has nanosecond %d, expected 999999999", tc.name, baseTime, tc.end.Nanosecond())
+			}
+		}
+	}
+}
+
+func TestEndOfContinuity(t *testing.T) {
+	testTimes := []time.Time{
+		time.Date(2024, 6, 15, 14, 33, 22, 123456789, time.UTC),
+		time.Date(2024, 2, 29, 12, 0, 0, 0, time.UTC),
+		time.Date(2023, 12, 31, 23, 0, 0, 0, time.UTC),
+		time.Date(2017, 10, 29, 10, 0, 0, 0, locationBerlin),
+		time.Date(2016, 1, 1, 12, 10, 0, 0, locationCaracas),
+	}
+
+	for _, base := range testTimes {
+		nowObj := With(base)
+
+		nextMin := nowObj.EndOfMinute().Add(time.Nanosecond)
+		expectedNextMin := nowObj.BeginningOfMinute().Add(time.Minute)
+		if !nextMin.Equal(expectedNextMin) {
+			t.Errorf("EndOfMinute + 1ns = %v, expected %v", nextMin, expectedNextMin)
+		}
+
+		nextHour := nowObj.EndOfHour().Add(time.Nanosecond)
+		expectedNextHour := nowObj.BeginningOfHour().Add(time.Hour)
+		if !nextHour.Equal(expectedNextHour) {
+			t.Errorf("EndOfHour + 1ns = %v, expected %v", nextHour, expectedNextHour)
+		}
+
+		nextDay := nowObj.EndOfDay().Add(time.Nanosecond)
+		expectedNextDay := nowObj.BeginningOfDay().AddDate(0, 0, 1)
+		if !nextDay.Equal(expectedNextDay) {
+			t.Errorf("EndOfDay + 1ns = %v, expected %v", nextDay, expectedNextDay)
+		}
+
+		nextWeek := nowObj.EndOfWeek().Add(time.Nanosecond)
+		expectedNextWeek := nowObj.BeginningOfWeek().AddDate(0, 0, 7)
+		if !nextWeek.Equal(expectedNextWeek) {
+			t.Errorf("EndOfWeek + 1ns = %v, expected %v", nextWeek, expectedNextWeek)
+		}
+
+		nextMonth := nowObj.EndOfMonth().Add(time.Nanosecond)
+		expectedNextMonth := nowObj.BeginningOfMonth().AddDate(0, 1, 0)
+		if !nextMonth.Equal(expectedNextMonth) {
+			t.Errorf("EndOfMonth + 1ns = %v, expected %v", nextMonth, expectedNextMonth)
+		}
+
+		nextQuarter := nowObj.EndOfQuarter().Add(time.Nanosecond)
+		expectedNextQuarter := nowObj.BeginningOfQuarter().AddDate(0, 3, 0)
+		if !nextQuarter.Equal(expectedNextQuarter) {
+			t.Errorf("EndOfQuarter + 1ns = %v, expected %v", nextQuarter, expectedNextQuarter)
+		}
+
+		nextHalf := nowObj.EndOfHalf().Add(time.Nanosecond)
+		expectedNextHalf := nowObj.BeginningOfHalf().AddDate(0, 6, 0)
+		if !nextHalf.Equal(expectedNextHalf) {
+			t.Errorf("EndOfHalf + 1ns = %v, expected %v", nextHalf, expectedNextHalf)
+		}
+
+		nextYear := nowObj.EndOfYear().Add(time.Nanosecond)
+		expectedNextYear := nowObj.BeginningOfYear().AddDate(1, 0, 0)
+		if !nextYear.Equal(expectedNextYear) {
+			t.Errorf("EndOfYear + 1ns = %v, expected %v", nextYear, expectedNextYear)
+		}
+
+		if !nowObj.EndOfDay().After(nowObj.BeginningOfDay()) {
+			t.Errorf("EndOfDay (%v) should be after BeginningOfDay (%v)", nowObj.EndOfDay(), nowObj.BeginningOfDay())
+		}
+	}
+}
+
+func TestPackageLevelEndOf(t *testing.T) {
+	if EndOfMinute().Nanosecond() != 999999999 {
+		t.Errorf("EndOfMinute nanosecond = %d, expected 999999999", EndOfMinute().Nanosecond())
+	}
+	if EndOfHour().Nanosecond() != 999999999 {
+		t.Errorf("EndOfHour nanosecond = %d, expected 999999999", EndOfHour().Nanosecond())
+	}
+	if EndOfDay().Nanosecond() != 999999999 {
+		t.Errorf("EndOfDay nanosecond = %d, expected 999999999", EndOfDay().Nanosecond())
+	}
+	if EndOfWeek().Nanosecond() != 999999999 {
+		t.Errorf("EndOfWeek nanosecond = %d, expected 999999999", EndOfWeek().Nanosecond())
+	}
+	if EndOfMonth().Nanosecond() != 999999999 {
+		t.Errorf("EndOfMonth nanosecond = %d, expected 999999999", EndOfMonth().Nanosecond())
+	}
+	if EndOfQuarter().Nanosecond() != 999999999 {
+		t.Errorf("EndOfQuarter nanosecond = %d, expected 999999999", EndOfQuarter().Nanosecond())
+	}
+	if EndOfYear().Nanosecond() != 999999999 {
+		t.Errorf("EndOfYear nanosecond = %d, expected 999999999", EndOfYear().Nanosecond())
+	}
+	if EndOfSunday().Nanosecond() != 999999999 {
+		t.Errorf("EndOfSunday nanosecond = %d, expected 999999999", EndOfSunday().Nanosecond())
 	}
 }
 

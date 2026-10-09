@@ -78,8 +78,7 @@ func (now *Now) EndOfHour() time.Time {
 
 // EndOfDay end of day
 func (now *Now) EndOfDay() time.Time {
-	y, m, d := now.Date()
-	return time.Date(y, m, d, 23, 59, 59, int(time.Second-time.Nanosecond), now.Location())
+	return now.BeginningOfDay().AddDate(0, 0, 1).Add(-time.Nanosecond)
 }
 
 // EndOfWeek end of week
