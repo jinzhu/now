@@ -412,6 +412,149 @@ func TestQuarter(t *testing.T) {
 	}
 }
 
+func TestMinTimeAndMaxTime(t *testing.T) {
+	if !MinTime.Before(MaxTime) {
+		t.Fatalf("MinTime should be before MaxTime, got MinTime: %v, MaxTime: %v", MinTime, MaxTime)
+	}
+
+	if !MaxTime.After(MinTime) {
+		t.Fatalf("MaxTime should be after MinTime, got MinTime: %v, MaxTime: %v", MinTime, MaxTime)
+	}
+
+	testTimes := []time.Time{
+		time.Time{}, // zero value
+		time.Unix(0, 0),
+		time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC),
+		time.Date(2023, 11, 18, 17, 51, 49, 123456789, time.UTC),
+		time.Date(100, 5, 10, 12, 0, 0, 0, time.UTC),
+		time.Date(-1000, 1, 1, 0, 0, 0, 0, time.UTC),
+		time.Date(9999, 12, 31, 23, 59, 59, 999999999, time.UTC),
+		time.Date(100000, 1, 1, 0, 0, 0, 0, time.UTC),
+		timeCaracas,
+	}
+
+	for _, tt := range testTimes {
+		if !tt.After(MinTime) {
+			t.Errorf("expected %v to be after MinTime %v", tt, MinTime)
+		}
+		if !MinTime.Before(tt) {
+			t.Errorf("expected MinTime %v to be before %v", MinTime, tt)
+		}
+		if !tt.Before(MaxTime) {
+			t.Errorf("expected %v to be before MaxTime %v", tt, MaxTime)
+		}
+		if !MaxTime.After(tt) {
+			t.Errorf("expected MaxTime %v to be after %v", MaxTime, tt)
+		}
+	}
+
+	nowInstance := With(time.Now())
+	if !nowInstance.MinTime().Equal(MinTime) {
+		t.Errorf("now.MinTime() should equal MinTime")
+	}
+	if !nowInstance.MaxTime().Equal(MaxTime) {
+		t.Errorf("now.MaxTime() should equal MaxTime")
+	}
+}
+
+func TestMin(t *testing.T) {
+	t1 := time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC)
+	t2 := time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
+	t3 := time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC)
+
+	// Single argument
+	if got := Min(t1); !got.Equal(t1) {
+		t.Errorf("Min(t1) = %v, expected %v", got, t1)
+	}
+
+	// Two arguments
+	if got := Min(t1, t2); !got.Equal(t1) {
+		t.Errorf("Min(t1, t2) = %v, expected %v", got, t1)
+	}
+	if got := Min(t2, t1); !got.Equal(t1) {
+		t.Errorf("Min(t2, t1) = %v, expected %v", got, t1)
+	}
+
+	// Multiple arguments in various orders
+	if got := Min(t3, t2, t1); !got.Equal(t1) {
+		t.Errorf("Min(t3, t2, t1) = %v, expected %v", got, t1)
+	}
+	if got := Min(t2, t3, t1); !got.Equal(t1) {
+		t.Errorf("Min(t2, t3, t1) = %v, expected %v", got, t1)
+	}
+
+	// Sentinel boundary pattern
+	if got := Min(MaxTime, t2, t3); !got.Equal(t2) {
+		t.Errorf("Min(MaxTime, t2, t3) = %v, expected %v", got, t2)
+	}
+	if got := Min(MinTime, t1, t2); !got.Equal(MinTime) {
+		t.Errorf("Min(MinTime, t1, t2) = %v, expected %v", got, MinTime)
+	}
+
+	// Equal times
+	t1Copy := time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC)
+	if got := Min(t1, t1Copy); !got.Equal(t1) {
+		t.Errorf("Min(t1, t1Copy) = %v, expected %v", got, t1)
+	}
+
+	// Method on Now struct
+	if got := With(t2).Min(t1); !got.Equal(t1) {
+		t.Errorf("With(t2).Min(t1) = %v, expected %v", got, t1)
+	}
+	if got := With(t1).Min(t2, t3); !got.Equal(t1) {
+		t.Errorf("With(t1).Min(t2, t3) = %v, expected %v", got, t1)
+	}
+}
+
+func TestMax(t *testing.T) {
+	t1 := time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC)
+	t2 := time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
+	t3 := time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC)
+
+	// Single argument
+	if got := Max(t1); !got.Equal(t1) {
+		t.Errorf("Max(t1) = %v, expected %v", got, t1)
+	}
+
+	// Two arguments
+	if got := Max(t1, t2); !got.Equal(t2) {
+		t.Errorf("Max(t1, t2) = %v, expected %v", got, t2)
+	}
+	if got := Max(t2, t1); !got.Equal(t2) {
+		t.Errorf("Max(t2, t1) = %v, expected %v", got, t2)
+	}
+
+	// Multiple arguments in various orders
+	if got := Max(t1, t3, t2); !got.Equal(t3) {
+		t.Errorf("Max(t1, t3, t2) = %v, expected %v", got, t3)
+	}
+	if got := Max(t3, t1, t2); !got.Equal(t3) {
+		t.Errorf("Max(t3, t1, t2) = %v, expected %v", got, t3)
+	}
+
+	// Sentinel boundary pattern
+	if got := Max(MinTime, t1, t2); !got.Equal(t2) {
+		t.Errorf("Max(MinTime, t1, t2) = %v, expected %v", got, t2)
+	}
+	if got := Max(MaxTime, t1, t2); !got.Equal(MaxTime) {
+		t.Errorf("Max(MaxTime, t1, t2) = %v, expected %v", got, MaxTime)
+	}
+
+	// Equal times
+	t2Copy := time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
+	if got := Max(t2, t2Copy); !got.Equal(t2) {
+		t.Errorf("Max(t2, t2Copy) = %v, expected %v", got, t2)
+	}
+
+	// Method on Now struct
+	if got := With(t1).Max(t2); !got.Equal(t2) {
+		t.Errorf("With(t1).Max(t2) = %v, expected %v", got, t2)
+	}
+	if got := With(t3).Max(t1, t2); !got.Equal(t3) {
+		t.Errorf("With(t3).Max(t1, t2) = %v, expected %v", got, t3)
+	}
+}
+
 func Example() {
 	time.Now() // 2013-11-18 17:51:49.123456789 Mon
 

@@ -11,6 +11,12 @@ package now
 
 import "time"
 
+// MinTime represents the minimum representable time.Time in Go (-292277022399-01-01 00:00:00 UTC)
+var MinTime = time.Date(-292277022399, time.January, 1, 0, 0, 0, 0, time.UTC)
+
+// MaxTime represents the maximum representable time.Time in Go (292277024627-12-06 15:30:07.999999999 UTC)
+var MaxTime = time.Unix(1<<63-62135596801, 999999999).UTC()
+
 // WeekStartDay set week start day, default is sunday
 var WeekStartDay = time.Sunday
 
@@ -196,4 +202,14 @@ func MustParseInLocation(loc *time.Location, strs ...string) time.Time {
 // Between check now between the begin, end time or not
 func Between(time1, time2 string) bool {
 	return With(time.Now()).Between(time1, time2)
+}
+
+// Min returns the earliest time among the given times
+func Min(t1 time.Time, t2 ...time.Time) time.Time {
+	return With(t1).Min(t2...)
+}
+
+// Max returns the latest time among the given times
+func Max(t1 time.Time, t2 ...time.Time) time.Time {
+	return With(t1).Max(t2...)
 }
