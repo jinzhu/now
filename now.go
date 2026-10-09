@@ -245,3 +245,35 @@ func (now *Now) Between(begin, end string) bool {
 	endTime := now.MustParse(end)
 	return now.After(beginTime) && now.Before(endTime)
 }
+
+// Min returns the earliest time among now.Time and the given times
+func (now *Now) Min(times ...time.Time) time.Time {
+	min := now.Time
+	for _, t := range times {
+		if t.Before(min) {
+			min = t
+		}
+	}
+	return min
+}
+
+// Max returns the latest time among now.Time and the given times
+func (now *Now) Max(times ...time.Time) time.Time {
+	max := now.Time
+	for _, t := range times {
+		if t.After(max) {
+			max = t
+		}
+	}
+	return max
+}
+
+// MinTime returns MinTime
+func (now *Now) MinTime() time.Time {
+	return MinTime
+}
+
+// MaxTime returns MaxTime
+func (now *Now) MaxTime() time.Time {
+	return MaxTime
+}
