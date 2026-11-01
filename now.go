@@ -182,6 +182,11 @@ func (now *Now) parseWithFormat(str string, location *time.Location) (t time.Tim
 var hasTimeRegexp = regexp.MustCompile(`(\s+|^\s*|T)\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))(\s*$|[Z+-])`) // match 15:04:05, 15:04:05.000, 15:04:05.000000 15, 2017-01-01 15:04, 2021-07-20T00:59:10Z, 2021-07-20T00:59:10+08:00, 2021-07-20T00:00:10-07:00 etc
 var onlyTimeRegexp = regexp.MustCompile(`^\s*\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))\s*$`)            // match 15:04:05, 15, 15:04:05.000, 15:04:05.000000, etc
 
+// meridiemTimeRegexp matches time-only strings with a meridiem indicator,
+// such as "3:04PM" (time.Kitchen format) or "12:30 AM", which are not
+// recognized by hasTimeRegexp or onlyTimeRegexp
+var meridiemTimeRegexp = regexp.MustCompile(`(?i)^\s*\d{1,2}:\d{1,2}(:\d{1,2})*\s*[ap]m\s*$`)
+
 // Parse parses string to time
 func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 	var (
@@ -193,8 +198,13 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 	)
 
 	for _, str := range strs {
-		hasTimeInStr := hasTimeRegexp.MatchString(str) // match 15:04:05, 15
-		onlyTimeInStr = hasTimeInStr && onlyTimeInStr && onlyTimeRegexp.MatchString(str)
+		// time-only strings with a meridiem indicator, such as "3:04PM"
+		// (time.Kitchen format), are recognized by neither of the regexps
+		// above, which made Parse fill their date with the reference year
+		// and Jan 1st instead of the reference date
+		isMeridiemTime := meridiemTimeRegexp.MatchString(str)
+		hasTimeInStr := hasTimeRegexp.MatchString(str) || isMeridiemTime // match 15:04:05, 15, 3:04PM
+		onlyTimeInStr = hasTimeInStr && onlyTimeInStr && (onlyTimeRegexp.MatchString(str) || isMeridiemTime)
 		if t, err = now.parseWithFormat(str, currentLocation); err == nil {
 			location := t.Location()
 			parseTime = formatTimeToList(t)

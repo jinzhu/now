@@ -447,3 +447,19 @@ func Example() {
 	Sunday("17:44") // 2013-11-24 17:44:00 Sun
 	EndOfSunday()   // 2013-11-24 23:59:59.999999999 Sun
 }
+
+func TestParseMeridiemTime(t *testing.T) {
+	assert := assertT(t)
+
+	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.UTC)
+
+	// Time-only strings with a meridiem indicator (time.Kitchen format) should
+	// reuse the current date, like "15:04" style inputs do.
+	assert(With(n).MustParse("3:04PM"), "2013-11-18 15:04:00", "Parse 3:04PM")
+
+	assert(With(n).MustParse("12:00AM"), "2013-11-18 00:00:00", "Parse 12:00AM")
+
+	assert(With(n).MustParse("11:30PM"), "2013-11-18 23:30:00", "Parse 11:30PM")
+
+	assert(With(n).MustParse("3:04AM"), "2013-11-18 03:04:00", "Parse 3:04AM")
+}
