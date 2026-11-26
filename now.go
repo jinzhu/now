@@ -180,7 +180,7 @@ func (now *Now) parseWithFormat(str string, location *time.Location) (t time.Tim
 }
 
 var hasTimeRegexp = regexp.MustCompile(`(\s+|^\s*|T)\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))(\s*$|[Z+-])`) // match 15:04:05, 15:04:05.000, 15:04:05.000000 15, 2017-01-01 15:04, 2021-07-20T00:59:10Z, 2021-07-20T00:59:10+08:00, 2021-07-20T00:00:10-07:00 etc
-var onlyTimeRegexp = regexp.MustCompile(`^\s*\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))\s*$`)            // match 15:04:05, 15, 15:04:05.000, 15:04:05.000000, etc
+var onlyTimeRegexp = regexp.MustCompile(`^\s*\d{1,2}((:\d{1,2})*|((:\d{1,2}){2}\.(\d{3}|\d{6}|\d{9})))\s*$`)                // match 15:04:05, 15, 15:04:05.000, 15:04:05.000000, etc
 
 // Parse parses string to time
 func (now *Now) Parse(strs ...string) (t time.Time, err error) {
@@ -195,37 +195,39 @@ func (now *Now) Parse(strs ...string) (t time.Time, err error) {
 	for _, str := range strs {
 		hasTimeInStr := hasTimeRegexp.MatchString(str) // match 15:04:05, 15
 		onlyTimeInStr = hasTimeInStr && onlyTimeInStr && onlyTimeRegexp.MatchString(str)
-		if t, err = now.parseWithFormat(str, currentLocation); err == nil {
-			location := t.Location()
-			parseTime = formatTimeToList(t)
+		t, err = now.parseWithFormat(str, currentLocation)
+		if err != nil {
+			return
+		}
+		location := t.Location()
+		parseTime = formatTimeToList(t)
 
-			for i, v := range parseTime {
-				// Don't reset hour, minute, second if current time str including time
-				if hasTimeInStr && i <= 3 {
-					continue
-				}
-
-				// If value is zero, replace it with current time
-				if v == 0 {
-					if setCurrentTime {
-						parseTime[i] = currentTime[i]
-					}
-				} else {
-					setCurrentTime = true
-				}
-
-				// if current time only includes time, should change day, month to current time
-				if onlyTimeInStr {
-					if i == 4 || i == 5 {
-						parseTime[i] = currentTime[i]
-						continue
-					}
-				}
+		for i, v := range parseTime {
+			// Don't reset hour, minute, second if current time str including time
+			if hasTimeInStr && i <= 3 {
+				continue
 			}
 
-			t = time.Date(parseTime[6], time.Month(parseTime[5]), parseTime[4], parseTime[3], parseTime[2], parseTime[1], parseTime[0], location)
-			currentTime = formatTimeToList(t)
+			// If value is zero, replace it with current time
+			if v == 0 {
+				if setCurrentTime {
+					parseTime[i] = currentTime[i]
+				}
+			} else {
+				setCurrentTime = true
+			}
+
+			// if current time only includes time, should change day, month to current time
+			if onlyTimeInStr {
+				if i == 4 || i == 5 {
+					parseTime[i] = currentTime[i]
+					continue
+				}
+			}
 		}
+
+		t = time.Date(parseTime[6], time.Month(parseTime[5]), parseTime[4], parseTime[3], parseTime[2], parseTime[1], parseTime[0], location)
+		currentTime = formatTimeToList(t)
 	}
 	return
 }

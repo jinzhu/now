@@ -356,6 +356,19 @@ func TestParse(t *testing.T) {
 	}
 }
 
+func TestParseInvalidFragment(t *testing.T) {
+	n := time.Date(2013, 11, 18, 17, 51, 49, 123456789, time.UTC)
+
+	for _, strs := range [][]string{
+		{"not a time", "2011-01-01"},
+		{"2011-01-01", "not a time"},
+	} {
+		if got, err := With(n).Parse(strs...); err == nil {
+			t.Errorf("Parse(%q, %q) = %v, nil; want an error for the invalid fragment", strs[0], strs[1], got)
+		}
+	}
+}
+
 func TestBetween(t *testing.T) {
 	tm := time.Date(2015, 06, 30, 17, 51, 49, 123456789, time.Now().Location())
 	if !With(tm).Between("23:28:9 Dec 19, 2013 PST", "23:28:9 Dec 19, 2015 PST") {
