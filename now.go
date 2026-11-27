@@ -13,8 +13,14 @@ func (now *Now) BeginningOfMinute() time.Time {
 
 // BeginningOfHour beginning of hour
 func (now *Now) BeginningOfHour() time.Time {
-	y, m, d := now.Date()
-	return time.Date(y, m, d, now.Time.Hour(), 0, 0, 0, now.Time.Location())
+	h, m, s := now.Clock()
+	start := now.Add(-time.Duration(m)*time.Minute - time.Duration(s)*time.Second - time.Duration(now.Nanosecond()))
+	if sh, sm, ss := start.Clock(); sh == h && sm == 0 && ss == 0 {
+		return start
+	}
+	// Offset transitions can also skip or repeat only part of a local hour.
+	y, month, d := now.Date()
+	return time.Date(y, month, d, h, 0, 0, 0, now.Location())
 }
 
 // BeginningOfDay beginning of day
