@@ -447,3 +447,20 @@ func Example() {
 	Sunday("17:44") // 2013-11-24 17:44:00 Sun
 	EndOfSunday()   // 2013-11-24 23:59:59.999999999 Sun
 }
+
+func TestParseVariableFractionalSeconds(t *testing.T) {
+	base := With(time.Date(2024, 5, 17, 13, 24, 36, 0, time.UTC))
+	for _, tc := range []struct {
+		input string
+		want  time.Time
+	}{
+		{"00:00:00.1", time.Date(2024, 5, 17, 0, 0, 0, 100000000, time.UTC)},
+		{"00:00:00,12", time.Date(2024, 5, 17, 0, 0, 0, 120000000, time.UTC)},
+		{"2023-02-03T00:00:00.1234Z", time.Date(2023, 2, 3, 0, 0, 0, 123400000, time.UTC)},
+	} {
+		got, err := base.Parse(tc.input)
+		if err != nil || !got.Equal(tc.want) {
+			t.Errorf("Parse(%q) = %v, %v, want %v", tc.input, got, err, tc.want)
+		}
+	}
+}
