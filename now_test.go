@@ -34,6 +34,37 @@ func assertT(t *testing.T) func(time.Time, string, string) {
 	}
 }
 
+func TestRepeatedHour(t *testing.T) {
+	loc, err := time.LoadLocation("Europe/London")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Both instants read 01:30 locally, one before and one after the rollback.
+	for _, utcHour := range []int{0, 1} {
+		start := time.Date(2018, time.October, 28, utcHour, 0, 0, 0, time.UTC)
+		n := With(start.Add(30 * time.Minute).In(loc))
+		if got := n.BeginningOfHour(); !got.Equal(start) || got.Location() != loc {
+			t.Errorf("BeginningOfHour(%v) = %v, want %v", n.Time, got, start.In(loc))
+		}
+		end := start.Add(time.Hour - time.Nanosecond)
+		if got := n.EndOfHour(); !got.Equal(end) {
+			t.Errorf("EndOfHour(%v) = %v, want %v", n.Time, got, end.In(loc))
+		}
+	}
+}
+
+func TestBeginningOfHourAfterPartialHourJump(t *testing.T) {
+	loc, err := time.LoadLocation("Australia/Lord_Howe")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// The clock jumps from 01:59 to 02:30; 02:00 does not exist.
+	start := time.Date(2021, time.October, 2, 15, 30, 0, 0, time.UTC).In(loc)
+	if got := With(start.Add(15 * time.Minute)).BeginningOfHour(); !got.Equal(start) {
+		t.Errorf("BeginningOfHour after half-hour jump = %v, want %v", got, start)
+	}
+}
+
 func TestBeginningOf(t *testing.T) {
 	assert := assertT(t)
 
